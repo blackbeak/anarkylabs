@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+/* global.css or styles.css */
+
+/* Force Swiper buttons to be small circles */
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px !important;  /* Make sure the width is 40px (tailwind w-10) */
+  height: 40px !important; /* Make sure the height is 40px (tailwind h-10) */
+  border-radius: 50% !important;  /* Force the button to be circular */
+  background-color: rgb(193, 83, 90) !important; /* Your brand red (tailwind bg-brandred) */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;  /* Ensure there's no padding */
+  color: white !important; /* Arrow should be white */
+}
+
+/* On hover, change the circle background to purple */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: rgb(56, 60, 92) !important; /* Purple-700 */
+}
+
+/* Adjust the arrow size */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px !important;  /* Equivalent to Tailwind text-lg */
+  color: white !important;  /* Arrow color */
+}
+
+/* Style the pagination bullets */
+.swiper-pagination-bullet {
+    @apply w-2 h-2 bg-gray-700 rounded-full mx-1 !important; /* Set size, background color, spacing */
+  }
+  
+  /* Change the color and size of the active bullet */
+  .swiper-pagination-bullet-active {
+    @apply bg-brandred w-2 h-2 !important; /* Set active color to brand red and make it larger */
+  }
+
+  .fade-circle {
+    /* Radial gradient for circular fade with smooth, soft edges */
+    -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 55%, rgba(255, 255, 255, 0) 70%);
+    mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 55%, rgba(255, 255, 255, 0) 70%);
+  
+    /* Ensure a smooth transition at the edges */
+    border-radius: 100%; /* Makes the image circular */
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    z-index: 999; /* Ensure it appears above everything else */
+  }
+
+
