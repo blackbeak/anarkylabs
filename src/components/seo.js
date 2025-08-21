@@ -2,6 +2,13 @@
 import React from "react";
 import { useSiteMetadata } from "../hooks/use-site-metadata";
 
+const isProduction = typeof window !== 'undefined' && 
+  (window.location.hostname === 'anarkylabs.com');
+
+const robotsContent = isProduction ? 'index, follow' : 'noindex, nofollow';
+
+
+
 export const Seo = ({ title, url, description, shareImage, children }) => {
   const {
     title: defaultTitle,
@@ -26,7 +33,8 @@ export const Seo = ({ title, url, description, shareImage, children }) => {
 
   return (
     <>
-      <title>{seo.title} | AirSkill by Anarky Labs Oy</title>
+      <title>{seo.title} | AirSkill & AirHUD by Anarky Labs Oy</title>
+      <meta name="robots" content={robotsContent} />
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
       <meta name="author" content={seo.author} />
