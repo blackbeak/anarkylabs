@@ -119,6 +119,12 @@ module.exports = {
           {
             singularName: "softwareItem",
           },
+          {
+            singularName: "form",
+            queryParams: {
+              populate: "*",
+            }
+          },
         ],
         singleTypes: [
           // Add the new home page

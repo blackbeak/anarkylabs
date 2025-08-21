@@ -93,3 +93,5 @@ temp/
 # Local development
 .local
 .vercel
+# Local Netlify folder
+.netlify
