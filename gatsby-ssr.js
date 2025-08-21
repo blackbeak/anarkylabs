@@ -18,7 +18,7 @@ export const onRenderBody = ({ setHtmlAttributes, setHeadComponents }) => {
     <script
       key="fathom"
       src="https://cdn.usefathom.com/script.js"
-      data-site="SNBRALHC"
+      data-site="RGEXAJWL"
       defer
     />,
     <meta
