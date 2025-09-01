@@ -127,19 +127,19 @@ const SimpleFooter = () => {
           </div>
 
           {/* Solutions Section - Hidden */}
-          <div className="hidden">
+          <div className="md:col-start-2">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerOne || "Solutions"}
             </h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Enterprise</Link></li>
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Training</Link></li>
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Simulation</Link></li>
+              <li><Link to="case/law-enforcement/" className="text-gray-300 hover:text-white transition-colors font-manrope">Law Enforcement</Link></li>
+              <li><Link to="case/drone-pilot-academies/" className="text-gray-300 hover:text-white transition-colors font-manrope">Drone training academies</Link></li>
+              <li><Link to="case/fire-departments/" className="text-gray-300 hover:text-white transition-colors font-manrope">Fire departments</Link></li>
             </ul>
           </div>
 
           {/* Products Section - Hidden */}
-          <div className="hidden">
+          <div className="md:col-start-3">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerTwo || "Products"}
             </h3>
@@ -151,14 +151,14 @@ const SimpleFooter = () => {
           </div>
 
           {/* Resources Section - Hidden */}
-          <div className="hidden">
+          <div className="md:col-start-4">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerThree || "Resources"}
             </h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Documentation</Link></li>
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Blog</Link></li>
-              <li><Link to="#" className="text-gray-300 hover:text-white transition-colors font-manrope">Support</Link></li>
+              <li><Link to="#" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">White papers</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Blog/News</Link></li>
+              <li><Link to="/faq" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Support/FAQ</Link></li>
             </ul>
           </div>
 
@@ -170,29 +170,37 @@ const SimpleFooter = () => {
             <ul className="space-y-2">
               <li><Link to="/about" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">About Us</Link></li>
                <li><Link to="/contact" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Contact</Link></li>
+               <li><Link to="/legal/terms/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Terms & Conditions</Link></li>
+               <li><Link to="/legal/license/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">License Agreement</Link></li>
+               <li><Link to="/legal/privacy/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Privacy Policy</Link></li>
+               <li><Link to="/legal/cookies/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Cookie Policy</Link></li>
             </ul>
           </div>
 
-          {/* Stay Updated Section - Hidden */}
-          <div className="hidden">
+          {/* Stay Updated Section */}
+          <div className="bg-gray-900 p-4 rounded-lg md:col-span-6 md:col-start-1">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.subscribeHeader || "Stay Updated"}
             </h3>
-            <p className="text-gray-300 font-manrope mb-4 text-sm">
-              {footer?.subscribeSummary || "Subscribe to our newsletter for the latest updates"}
-            </p>
-            <div className="flex">
-              <input 
-                type="email" 
-                placeholder="Enter your email"
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-brandorange text-sm font-manrope"
-              />
-              <button className="px-4 py-2 bg-brandorange hover:bg-orange-600 rounded-r-lg transition-colors text-sm font-manrope font-medium">
-                Subscribe
-              </button>
+            
+            {/* Flex container for text and email form */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <p className="text-gray-300 font-manrope text-sm flex-1">
+                {footer?.subscribeSummary || "Subscribe to our newsletter for the latest updates"}
+              </p>
+              
+              <div className="flex flex-shrink-0">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email"
+                  className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-brandorange text-sm font-manrope w-48"
+                />
+                <button className="px-4 py-2 bg-white text-black hover:bg-brandorange hover:text-white rounded-r-lg transition-colors text-sm font-manrope font-medium">
+                  Subscribe
+                </button>
+              </div>
             </div>
           </div>
-
         </div>
 
         {/* Divider */}
