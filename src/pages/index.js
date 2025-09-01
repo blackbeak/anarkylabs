@@ -27,7 +27,7 @@ const HomePage = ({ data }) => {
       <main className="flex-1 bg-white">
         
         {/* CTA 1 - AirHUD (Black Background - Full Width) */}
-        <div className="bg-gradient-to-b from-black to-gray-600 h-[500px] sm:h-[700px] flex items-center justify-center w-full">
+        <div className="bg-gradient-to-b from-black to-gray-600 py-16 sm:py-24 flex items-center justify-center w-full">
           <div className="text-center max-w-7xl mx-auto px-4 sm:px-10">
             {/* Hero Image One */}
             {heroImageOne && (
@@ -58,7 +58,7 @@ const HomePage = ({ data }) => {
         </div>
 
         {/* CTA 2 - AirSkill (White Background - Full Width) */}
-        <div className="bg-gradient-to-b from-gray-600 to-white h-[500px] sm:h-[700px] flex items-center justify-center w-full">
+        <div className="bg-gradient-to-b from-gray-600 to-white py-16 sm:py-24 flex items-center justify-center w-full">
           <div className="text-center max-w-7xl mx-auto px-4 sm:px-10">
             {/* Hero Image Two */}
             {heroImageTwo && (
