@@ -156,6 +156,9 @@ module.exports = {
           {
             singularName: "features",
           },
+          {
+            singularName: "footer",
+          },
         ],
       },
     },
