@@ -1,7 +1,13 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "gatsby"
 
 const SimpleHeader = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
   return (
     <header className="bg-black border-b border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,20 +22,137 @@ const SimpleHeader = () => {
               />
             </Link>
           </div>
-          
-          {/* Navigation - Right */}
-          <nav className="flex space-x-4 sm:space-x-8 font-manrope items-center">
+
+          {/* Main Navigation - Center */}
+          <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8 font-manrope items-center">
             <Link 
-              to="/about"
+              to="/airhud"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
             >
-              About
+              AirHUD™
+            </Link>
+            <Link 
+              to="/airskill"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+            >
+              AirSkill
+            </Link>
+            <Link 
+              to="/airlabs"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+            >
+              AirLabs
+            </Link>
+            <Link 
+              to="/faq"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+            >
+              Support
+            </Link>
+            <Link 
+              to="/blog"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+            >
+              Resources
+            </Link>
+          </nav>
+
+          {/* Secondary Navigation - Right */}
+          <nav className="hidden md:flex space-x-4 font-manrope items-center">
+            <Link 
+              to="/contact"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+            >
+              Contact
+            </Link>
+            <Link 
+              to="/shop-index"
+              className="bg-white text-black text-sm hover:bg-brandorange hover:text-white font-medium transition-colors px-4 py-2 rounded-md"
+            >
+              Buy Now
+            </Link>
+          </nav>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            onClick={toggleMenu}
+            className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1"
+            aria-label="Toggle menu"
+          >
+            <span 
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                isMenuOpen ? 'rotate-45 translate-y-2' : ''
+              }`}
+            />
+            <span 
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                isMenuOpen ? 'opacity-0' : ''
+              }`}
+            />
+            <span 
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                isMenuOpen ? '-rotate-45 -translate-y-2' : ''
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ${
+          isMenuOpen ? 'max-h-128 pb-4' : 'max-h-0'
+        }`}>
+          <nav className="flex flex-col space-y-4 pt-4 font-manrope">
+            {/* Navigation Links */}
+            
+           <Link 
+              to="/airhud"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              AirHUD™
+            </Link>
+            <Link 
+              to="/airskill"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              AirSkill
+            </Link>
+             <Link 
+              to="/airlabs"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              AirLabs
+            </Link>
+            <Link 
+              to="/faq"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Support
+            </Link>
+            <Link 
+              to="/blog"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Resources
             </Link>
             <Link 
               to="/contact"
-              className="bg-white text-black text-sm hover:bg-brandorange hover:text-white font-medium transition-colors px-4 py-2 rounded-md"
+              className="text-white text-sm hover:text-brandorange font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
             >
-              Contact Sales
+              Contact
+            </Link>
+            {/* Buy Now Button - Bottom of mobile menu */}
+            <Link 
+              to="/shop-index"
+              className="bg-white text-black text-sm hover:bg-brandorange hover:text-white font-medium transition-colors px-4 py-3 rounded-md text-center mt-4"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Buy Now
             </Link>
           </nav>
         </div>

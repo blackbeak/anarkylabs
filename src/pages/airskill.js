@@ -17,7 +17,7 @@ import ScenarioCarousel from "../components/ScenarioCarousel";
 import ProductVariables from "../components/productVariables"; // Import the ProductVariables component
 
 
-const IndexPage = ({ data }) => {
+const AirskillPage = ({ data }) => {
   const idx = data.strapiIndex;
   const headline = idx.headline;
   const summary = idx.summary;
@@ -369,7 +369,7 @@ export const Head = ({ data }) => {
 
 // get the data with GraphQL
 export const query = graphql`
-  query indexQuery {
+  query IndexQuery {
     strapiIndex {
       body {
         data {
@@ -498,4 +498,4 @@ export const query = graphql`
   }
 `;
 
-export default IndexPage;
+export default AirskillPage;

@@ -139,6 +139,12 @@ module.exports = {
             singularName: "index",
           },
           {
+            singularName: "airskill",
+          },
+          {
+            singularName: "airhud",
+          },
+          {
             singularName: "pricing",
           },
           {

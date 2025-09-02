@@ -5,7 +5,8 @@ const ApiForm = ({
   formId,
   onSuccess = null,
   onError = null,
-  className = "space-y-4"
+  className = "space-y-4",
+  layout = "vertical" // Add layout prop: "vertical" or "horizontal"
 }) => {
   const [status, setStatus] = useState({ loading: false, success: null, error: null });
 
@@ -26,6 +27,7 @@ const ApiForm = ({
             type
             required
             order
+            value
           }
         }
       }
@@ -118,14 +120,23 @@ const ApiForm = ({
   // Sort fields by order
   const sortedFields = fields.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  // Render different field types
-  const renderField = (field) => {
+  // Render different field types with layout-aware styling
+  const renderField = (field, isHorizontal = false) => {
+    const baseInputClasses = isHorizontal 
+      ? "px-3 py-2 border border-gray-300 focus:outline-none focus:border-brandorange text-sm font-manrope"
+      : "w-full border rounded px-4 py-2 mt-1";
+
     const commonProps = {
       name: field.name,
       required: field.required || false,
       placeholder: field.placeholder || "",
-      className: "w-full border rounded px-4 py-2 mt-1"
+      className: baseInputClasses
     };
+
+    // For horizontal email fields, add specific styling
+    if (isHorizontal && field.type === 'email') {
+      commonProps.className = "px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-brandorange text-sm font-manrope w-48 text-white";
+    }
 
     switch (field.type) {
       case 'text':
@@ -227,28 +238,45 @@ const ApiForm = ({
     }
   };
 
+  // Determine form layout classes
+  const isHorizontal = layout === "horizontal";
+  const formClasses = isHorizontal ? "flex items-end gap-0" : "space-y-4";
+  const buttonClasses = isHorizontal 
+    ? "px-4 py-2 bg-white text-black hover:bg-brandorange hover:text-white rounded-r-lg transition-colors text-sm font-manrope font-medium"
+    : "bg-brandblue font-manrope text-white px-6 py-2 rounded hover:bg-brandorange disabled:opacity-50 transition-colors";
+
   return (
     <div className={className}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {status.success && (
+      <form onSubmit={handleSubmit} className={formClasses}>
+        {/* Messages - only show above form, not inline for horizontal */}
+        {!isHorizontal && status.success && (
           <div className="text-green-600 font-manrope bg-green-50 p-3 rounded">
             {status.success}
           </div>
         )}
-        {status.error && (
+        {!isHorizontal && status.error && (
           <div className="text-red-600 font-manrope bg-red-50 p-3 rounded">
             {status.error}
           </div>
         )}
 
+        {/* Fields */}
         {sortedFields.map((field, index) => (
           <div key={index}>
             {field.type !== 'hidden' && (
-              <label className="block font-manrope font-semibold">
-                {field.label}
-                {field.required && <span className="text-red-500 ml-1">*</span>}
-                {renderField(field)}
-              </label>
+              <>
+                {isHorizontal ? (
+                  // Horizontal layout - no labels, direct field rendering
+                  renderField(field, true)
+                ) : (
+                  // Vertical layout - with labels
+                  <label className="block font-manrope font-semibold">
+                    {field.label}
+                    {field.required && <span className="text-red-500 ml-1">*</span>}
+                    {renderField(field)}
+                  </label>
+                )}
+              </>
             )}
             {field.type === 'hidden' && renderField(field)}
           </div>
@@ -260,11 +288,23 @@ const ApiForm = ({
         <button
           type="submit"
           disabled={status.loading}
-          className="bg-brandblue font-manrope text-white px-6 py-2 rounded hover:bg-brandorange disabled:opacity-50 transition-colors"
+          className={buttonClasses}
         >
           {status.loading ? "Submitting..." : config.buttonText}
         </button>
       </form>
+
+      {/* Messages for horizontal layout - show below form */}
+      {isHorizontal && status.success && (
+        <div className="text-green-300 font-manrope bg-green-900/50 border border-green-700/50 p-3 rounded mt-4">
+          {status.success}
+        </div>
+      )}
+      {isHorizontal && status.error && (
+        <div className="text-red-300 font-manrope bg-red-900/50 border border-red-700/50 p-3 rounded mt-4">
+          {status.error}
+        </div>
+      )}
     </div>
   );
 };
