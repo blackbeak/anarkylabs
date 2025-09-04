@@ -30,7 +30,7 @@ const NotFoundPage = () => {
             This page is beyond visual line of sight (BVLOS).
           </h2>
           <p className="text-gray-200 mb-8 leading-relaxed">
-            You're out of range. We're sorry, but the page you were looking for doesn't exist. Give us time! we're either building it or one of our tech people is re-routing it. In the meantime you can read about <Link to="/article/safe-situational-awareness-with-bvlos" className="underline hover:text-brandorange">BVLOS here</Link> or continue from our home page below
+            You're out of range. We're sorry, but the page you were looking for doesn't exist. We're either building it or one of our tech people is re-routing it. In the meantime you can read about <Link to="/article/safe-situational-awareness-with-bvlos" className="underline hover:text-brandorange">BVLOS here</Link> or continue from our home page below
           </p>
           <Link 
             to="/"
