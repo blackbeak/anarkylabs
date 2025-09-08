@@ -49,8 +49,8 @@ const NotFoundPage = () => {
 
 // Add Page Head component and pass in SEO variables from GraphQL
 export const Head = () => {
-  const title = "Page not ready yet, missing in action or not found";
-  const description = "We're sorry, but the page you were looking for doesn't exist. Give us time!";
+  const title = "404 - This page is beyond visual line of sight (BVLOS)";
+  const description = "You're out of range. We're sorry, but the page you were looking for doesn't exist. We're either building it or one of our tech people is re-routing it.";
   return <Seo title={title} description={description} />;
 };
 

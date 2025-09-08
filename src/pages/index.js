@@ -17,7 +17,7 @@ const HomePage = ({ data }) => {
       {/* Headline Section */}
       <section className="bg-black py-8 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-lg sm:text-xl font-manrope text-cyan-50">
+          <h1 className="text-2xl md:text-6xl font-bold text-cyan-50">
             {home?.headline || "Advanced Simulation Solutions"}
           </h1>
         </div>
@@ -28,7 +28,7 @@ const HomePage = ({ data }) => {
         
         {/* CTA 1 - AirHUD (Black Background - Full Width) */}
         <div className="bg-gradient-to-b from-black to-gray-600 py-16 sm:py-24 flex items-center justify-center w-full">
-          <div className="text-center max-w-7xl mx-auto px-4 sm:px-10">
+          <div className="text-center font-manrope max-w-7xl mx-auto px-4 sm:px-10">
             {/* Hero Image One */}
             {heroImageOne && (
               <div style={{textAlign: 'center', marginBottom: '16px'}} className="sm:mb-6">

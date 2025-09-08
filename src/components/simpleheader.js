@@ -3,7 +3,6 @@ import { Link } from "gatsby"
 
 const SimpleHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
@@ -23,8 +22,8 @@ const SimpleHeader = () => {
             </Link>
           </div>
 
-          {/* Main Navigation - Center */}
-          <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8 font-manrope items-center">
+          {/* Main Navigation - Center - Now shows on lg and up */}
+          <nav className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 space-x-8 font-manrope items-center">
             <Link 
               to="/airhud"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
@@ -57,8 +56,8 @@ const SimpleHeader = () => {
             </Link>
           </nav>
 
-          {/* Secondary Navigation - Right */}
-          <nav className="hidden md:flex space-x-4 font-manrope items-center">
+          {/* Secondary Navigation - Right - Now shows on lg and up */}
+          <nav className="hidden lg:flex space-x-4 font-manrope items-center">
             <Link 
               to="/contact"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
@@ -73,10 +72,10 @@ const SimpleHeader = () => {
             </Link>
           </nav>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Hamburger Button - Now shows below lg breakpoint */}
           <button
             onClick={toggleMenu}
-            className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1"
+            className="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1"
             aria-label="Toggle menu"
           >
             <span 
@@ -97,14 +96,13 @@ const SimpleHeader = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ${
+        {/* Mobile Navigation Menu - Shows below lg breakpoint */}
+        <div className={`lg:hidden overflow-hidden transition-all duration-300 ${
           isMenuOpen ? 'max-h-128 pb-4' : 'max-h-0'
         }`}>
           <nav className="flex flex-col space-y-4 pt-4 font-manrope">
             {/* Navigation Links */}
-            
-           <Link 
+            <Link 
               to="/airhud"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
@@ -118,7 +116,7 @@ const SimpleHeader = () => {
             >
               AirSkill
             </Link>
-             <Link 
+            <Link 
               to="/airlabs"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}

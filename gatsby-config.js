@@ -63,6 +63,15 @@ module.exports = {
             singularName: "legal",
           },
           {
+            singularName: "hero",
+          },
+          {
+            singularName: "page-collection",
+          },
+          {
+            singularName: "cta-section",
+          },
+          {
             singularName: "version",
           },
           {
