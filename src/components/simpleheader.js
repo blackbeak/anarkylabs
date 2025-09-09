@@ -121,7 +121,7 @@ const SimpleHeader = () => {
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              AirLabs
+              Labs
             </Link>
             <Link 
               to="/faq"

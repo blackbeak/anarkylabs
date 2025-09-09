@@ -3,25 +3,23 @@ import { graphql } from "gatsby"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import SimpleHeader from "../components/simpleheader"
 import SimpleFooter from "../components/simplefooter"
+import Hero from "../components/hero"
 
 const HomePage = ({ data }) => {
   const home = data.strapiHome
   const heroImageOne = getImage(home?.heroImageOne?.localFile?.childImageSharp?.gatsbyImageData)
   const heroImageTwo = getImage(home?.heroImageTwo?.localFile?.childImageSharp?.gatsbyImageData)
 
+  // Pass heroID and all heroes to component for selection
+  const allHeroes = data.allStrapiHero?.nodes || []
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <SimpleHeader />
 
-      {/* Headline Section */}
-      <section className="bg-black py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl md:text-6xl font-bold text-cyan-50">
-            {home?.headline || "Advanced Simulation Solutions"}
-          </h1>
-        </div>
-      </section>
+      {/* Hero Section - Component selects hero by ID */}
+      <Hero heroID="home" allHeroes={allHeroes} />
 
       {/* Main Content */}
       <main className="flex-1 bg-white">
@@ -145,6 +143,33 @@ export const query = graphql`
             )
           }
         }
+      }
+    }
+    allStrapiHero {
+      nodes {
+        id
+        heroID
+        headline
+        description
+        ctaOneText
+        ctaOneLink
+        ctaTwoText
+        ctaTwoLink
+        backgroundMedia {
+          url
+          mime
+          localFile {
+            childImageSharp {
+              gatsbyImageData(
+                placeholder: BLURRED
+                formats: [AUTO, WEBP, AVIF]
+                width: 1920
+                height: 1080
+              )
+            }
+          }
+        }
+        backgroundVideo
       }
     }
   }
