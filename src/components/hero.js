@@ -105,10 +105,10 @@ const Hero = ({ heroID, allHeroes = [] }) => {
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
-                width: '110vw',        // Increased from 100vw
-                height: '61.25vw',      // Increased proportionally (110 * 0.5625)
-                minHeight: '110vh',    // Increased from 100vh
-                minWidth: '195.55vh',  // Increased proportionally (110 / 0.5625)
+                width: '140vw',        // Much larger viewing window
+                height: '78.75vw',     // Proportional height (140 * 0.5625)
+                minHeight: '140vh',    // Larger depth
+                minWidth: '248.88vh',  // Proportional width (140 / 0.5625)
                 transform: 'translate(-50%, -50%)',
                 pointerEvents: 'none'
               }}
@@ -172,7 +172,7 @@ const Hero = ({ heroID, allHeroes = [] }) => {
   }
 
   return (
-    <section className="relative py-8 sm:py-16 min-h-[50vh] flex items-center overflow-hidden">
+    <section className="relative py-8 sm:py-16 min-h-[80vh] flex items-center overflow-hidden">
       {renderBackground()}
 
       <div className="relative z-20 w-full">
