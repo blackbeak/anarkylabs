@@ -4,6 +4,8 @@ import SimpleHeader from "../components/simpleheader"
 import SimpleFooter from "../components/simplefooter"
 import Hero from "../components/hero"
 import PageCollection from "../components/pageCollection"
+import LogoCarousel from "../components/logoCarousel"
+import BlogSection from "../components/blogSection"
 
 const HomePage = ({ data }) => {
   // Hero data
@@ -11,6 +13,15 @@ const HomePage = ({ data }) => {
 
   // PageCollection data
   const allPageCollections = data.allStrapiPageCollection?.nodes || []
+  
+  // Logo data
+  const allLogos = data.allStrapiReferenceLogo?.nodes || []
+
+  // for section headlines
+  const home = data.strapiHome
+
+  // for articles
+   const featuredArticles = home?.articles || []
   
   // Find specific page collections by collectionID
   const airHudCollection = allPageCollections.find(p => p.collectionID === "airhud")
@@ -20,6 +31,7 @@ const HomePage = ({ data }) => {
   // console.log("All collections:", allPageCollections.map(p => p.collectionID))
   // console.log("AirHUD found:", !!airHudCollection)
   // console.log("AirSkill found:", !!airSkillCollection)
+  // console.log("Logos found:", allLogos.length)
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -45,7 +57,33 @@ const HomePage = ({ data }) => {
             collectionData={airSkillCollection}
           />
         )}
-        
+
+        {/* Logo Carousel - Manual navigation only */}
+        {allLogos.length > 0 && (
+          <section className="bg-white">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Section Headline */}
+              {home?.sectionHeadline && (
+                <div className="text-center pb-8">
+                  <h2 className="text-2xl sm:text-3xl font-manrope font-bold text-gray-900">
+                    {home.sectionHeadline}
+                  </h2>
+                </div>
+              )}
+            </div>
+
+            <LogoCarousel 
+              logos={allLogos}
+              variant="white"
+            />
+          </section>
+        )}
+        {/* Featured Articles Section */}
+        <BlogSection 
+          articles={featuredArticles}
+          sectionTitle={home?.sectionHeadlineTwo}
+          maxArticles={6}
+        />
       </main>
 
       {/* Footer */}
@@ -73,6 +111,20 @@ export const query = graphql`
       id
       title
       description
+      sectionHeadline
+      sectionHeadlineTwo
+      articles {
+          id
+          title
+          headline
+          summary
+          slug
+          articleImage {
+            localFile {
+              publicURL
+            }
+          }
+        }
       hero {
         id
         headline
@@ -147,6 +199,25 @@ export const query = graphql`
                 placeholder: BLURRED
                 formats: [AUTO, WEBP, AVIF]
                 width: 400
+              )
+            }
+          }
+        }
+      }
+    }
+    allStrapiReferenceLogo {
+      nodes {
+        id
+        url
+        logo {
+          url
+          localFile {
+            childImageSharp {
+              gatsbyImageData(
+                placeholder: BLURRED
+                formats: [AUTO, WEBP, AVIF]
+                width: 200
+                height: 100
               )
             }
           }
