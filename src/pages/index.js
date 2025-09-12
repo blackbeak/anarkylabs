@@ -6,6 +6,8 @@ import Hero from "../components/hero"
 import PageCollection from "../components/pageCollection"
 import LogoCarousel from "../components/logoCarousel"
 import BlogSection from "../components/blogSection"
+import CtaSection from "../components/ctaSection"
+import { HandshakeIconPro } from "../components/svg"
 
 const HomePage = ({ data }) => {
   // Hero data
@@ -23,9 +25,13 @@ const HomePage = ({ data }) => {
   // for articles
    const featuredArticles = home?.articles || []
   
-  // Find specific page collections by collectionID
+ // for CTA section
+   const allCtaSections = data.allStrapiCtaSection?.nodes || []
+  
+  // Find specific collections by ID
   const airHudCollection = allPageCollections.find(p => p.collectionID === "airhud")
   const airSkillCollection = allPageCollections.find(p => p.collectionID === "airskill")
+  const homeCta = allCtaSections.find(cta => cta.ctaID === "home")
 
   // Debug - check what collections we found
   // console.log("All collections:", allPageCollections.map(p => p.collectionID))
@@ -58,6 +64,9 @@ const HomePage = ({ data }) => {
           />
         )}
 
+        <div className="flex justify-center mb-4">
+          <HandshakeIconPro className="w-8 h-8 text-brandblue" />
+        </div>
         {/* Logo Carousel - Manual navigation only */}
         {allLogos.length > 0 && (
           <section className="bg-white">
@@ -71,13 +80,19 @@ const HomePage = ({ data }) => {
                 </div>
               )}
             </div>
-
+             
             <LogoCarousel 
               logos={allLogos}
               variant="white"
             />
           </section>
         )}
+
+        {/* CTA Section */}
+        {homeCta && (
+          <CtaSection ctaData={homeCta} />
+        )}
+        
         {/* Featured Articles Section */}
         <BlogSection 
           articles={featuredArticles}
@@ -224,7 +239,39 @@ export const query = graphql`
         }
       }
     }
+    allStrapiCtaSection {
+      nodes {
+        id
+        ctaID
+        headline
+        description
+        ctaOneText
+        ctaOneSlug
+        ctaOne {
+          data {
+            ctaOne
+          }
+        }
+        ctaTwoText
+        ctaTwoSlug
+        ctaTwo {
+          data {
+            ctaTwo
+          }
+        }
+        ctaTwoText
+        ctaTwoSlug
+        ctaThreeText
+        ctaThreeSlug
+        ctaThree {
+          data {
+            ctaThree
+          }
+        }
+      }
+    }
   }
 `
 
 export default HomePage
+           

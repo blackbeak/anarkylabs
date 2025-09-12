@@ -1,5 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
+import { NewspaperIcon } from "../components/svg"
+
 
 const BlogSection = ({ 
   articles = [], 
@@ -19,7 +21,9 @@ const BlogSection = ({
   return (
     <section className={`bg-white py-16 sm:py-24 ${className}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        
+        <p className="flex justify-center mb-4">
+                  <NewspaperIcon className="w-8 h-8 text-brandblue" />
+        </p>
         {/* Section Title */}
         {sectionTitle && (
           <div className="text-center mb-12">
