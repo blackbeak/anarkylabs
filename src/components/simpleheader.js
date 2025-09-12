@@ -37,10 +37,10 @@ const SimpleHeader = () => {
               AirSkill
             </Link>
             <Link 
-              to="/airlabs"
+              to="/labs"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
             >
-              AirLabs
+              Labs
             </Link>
             <Link 
               to="/faq"
@@ -117,7 +117,7 @@ const SimpleHeader = () => {
               AirSkill
             </Link>
             <Link 
-              to="/airlabs"
+              to="/labs"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
