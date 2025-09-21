@@ -248,25 +248,19 @@ export const query = graphql`
         ctaOneText
         ctaOneSlug
         ctaOne {
-          data {
-            ctaOne
+          data  
           }
-        }
         ctaTwoText
         ctaTwoSlug
         ctaTwo {
-          data {
-            ctaTwo
-          }
+          data 
         }
         ctaTwoText
         ctaTwoSlug
         ctaThreeText
         ctaThreeSlug
         ctaThree {
-          data {
-            ctaThree
-          }
+          data 
         }
       }
     }
