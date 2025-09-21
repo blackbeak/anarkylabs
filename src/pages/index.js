@@ -247,21 +247,15 @@ export const query = graphql`
         description
         ctaOneText
         ctaOneSlug
-        ctaOne {
-          data  
-          }
+        ctaOne
         ctaTwoText
         ctaTwoSlug
-        ctaTwo {
-          data 
-        }
+        ctaTwo 
         ctaTwoText
         ctaTwoSlug
         ctaThreeText
         ctaThreeSlug
-        ctaThree {
-          data 
-        }
+        ctaThree 
       }
     }
   }

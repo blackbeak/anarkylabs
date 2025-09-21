@@ -4,11 +4,11 @@ import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import SimpleHeader from "../components/simpleheader"
 import SimpleFooter from "../components/simplefooter"
 import Hero from "../components/hero"
+import Benefits from "../components/benefits"
 import FeatureCollections from "../components/featureCollections"
 import CtaSection from "../components/ctaSection"
 import VideoPlayer from "../components/videoPlayer"
 import SelectedFAQ from "../components/selectedFaq"
-import Benefits from "../components/benefits"
 
 const AirHUDPage = ({ data }) => {
   // Get AirHUD data
@@ -27,6 +27,9 @@ const AirHUDPage = ({ data }) => {
   const systemOverviewImage = airHUD?.systemOverview ? getImage(airHUD.systemOverview?.localFile?.childImageSharp?.gatsbyImageData) : null
   const bodyImage = airHUD?.hero?.backgroundMedia ? getImage(airHUD.hero.backgroundMedia?.localFile?.childImageSharp?.gatsbyImageData) : null
   const videoUrl = airHUD?.videoUrl || null
+ 
+  // Debug FAQ data
+  console.log("AirHUD FAQs:", airHUD?.faqs)
  
   if (!airHUD) {
     return (
@@ -52,7 +55,7 @@ const AirHUDPage = ({ data }) => {
 
       {/* Main Content */}
       <main className="flex-1 bg-white">
-
+        
         {/* Benefits Section */}
         {(airHUD.benefitHeadline || airHUD.benefitText || (airHUD.benefits && airHUD.benefits.length > 0)) && (
           <Benefits 
@@ -62,7 +65,7 @@ const AirHUDPage = ({ data }) => {
             backgroundColor="bg-white"
           />
         )}
-        
+
         {/* Feature Collections - Alternating layout - Use AirHUD's selected feature collections */}
         {airHUD.feature_collections && airHUD.feature_collections.length > 0 && (
           <FeatureCollections 
@@ -89,7 +92,7 @@ const AirHUDPage = ({ data }) => {
                 <VideoPlayer 
                   videoUrl={videoUrl}
                   facadeImage={bodyImage}
-                  facadeImageAlt={`${airHUD.headline || 'AirHUD'} demonstration`}
+                  facadeImageAlt={`${airHUD.benefitHeadline || 'AirHUD'} demonstration`}
                   playButtonText="Watch Demo"
                   maxWidth="container"
                 />
@@ -141,28 +144,22 @@ const AirHUDPage = ({ data }) => {
             </div>
           </section>
         )}
-          {/* CTA Section */}
+
+        {/* CTA Section */}
         {airHUDCta && (
           <CtaSection ctaData={airHUDCta} />
         )}
        
-        {/* SubHead Two Section (FAQ Title) */}
-        {airHUD.subHeadTwo && (
-          <section className="bg-gray-50 py-8">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-left max-w-4xl mx-auto">
-                <SelectedFAQ 
-                selectedFAQs={airHUD.faqs || []}
-                sectionTitle={airHUD.subHeadTwo}
-                showTitle={true}
-                backgroundColor="bg-gray-50"
-                />
-              </div>
-            </div>
-          </section>
+        {/* FAQ Section - Fixed: Use correct field name and remove nested section */}
+        {airHUD.subHeadTwo && airHUD.faqs && airHUD.faqs.length > 0 && (
+          <SelectedFAQ 
+            selectedFAQs={airHUD.faqs}
+            sectionTitle={airHUD.subHeadTwo}
+            showTitle={true}
+            backgroundColor="bg-gray-50"
+          />
         )}
 
-      
       </main>
 
       {/* Footer */}
@@ -224,7 +221,7 @@ export const query = graphql`
         question
         answer
       }
-        benefits {
+      benefits {
         id
         benefitTitle
         benefitBody
@@ -292,21 +289,15 @@ export const query = graphql`
         ctaID
         headline
         description
+        ctaOne
+        ctaTwo
+        ctaThree
         ctaOneText
         ctaOneSlug
-        ctaOne {
-          data  
-        }
         ctaTwoText
         ctaTwoSlug
-        ctaTwo {
-          data 
-        }
         ctaThreeText
         ctaThreeSlug
-        ctaThree {
-          data 
-        }
       }
     }
   }
