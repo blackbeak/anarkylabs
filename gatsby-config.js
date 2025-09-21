@@ -153,6 +153,9 @@ module.exports = {
           {
             singularName: "airhud",
           },
+           {
+            singularName: "lab",
+          },
           {
             singularName: "pricing",
           },

@@ -147,7 +147,7 @@ const SimpleFooter = () => {
             <ul className="space-y-2">
               <li><Link to="/airhud" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">AirHUD</Link></li>
               <li><Link to="/airskill" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">AirSkill</Link></li>
-              <li><Link to="/airlabs" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">AirLabs</Link></li>
+              <li><Link to="/labs" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Labs</Link></li>
             </ul>
           </div>
 
