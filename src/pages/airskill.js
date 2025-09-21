@@ -33,7 +33,7 @@ const AirskillPage = ({ data }) => {
   const videoUrl = idx.videoUrl ? getVimeoEmbedUrl(idx.videoUrl) : null; // Use Vimeo utility function
   const bodyImageText = idx.bodyImageText?.data?.bodyImageText;
   const body = idx.body.data.body;
-  const benefits = data.allStrapiBenefit.nodes;
+  const benefits = idx.benefits || []; // Use selected benefits from relation
   const useCases = data.allStrapiTarget.nodes;
   const testimonials = data.allStrapiTestimonial.nodes;
   //const logos = data.allStrapiReferenceLogo.nodes;
@@ -126,8 +126,9 @@ const AirskillPage = ({ data }) => {
       <div className="container m-auto px-6 py-12 bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {benefits.map((benefit, index) => {
-            // Get the corresponding icon for this benefit based on its order
-            const icon = benefitIcons[index] || <FaRocket />; // Default icon if index exceeds array bounds
+            // Get the corresponding icon for this benefit based on its orderBy value
+            const iconIndex = (benefit.orderBy || 1) - 1
+            const icon = benefitIcons[iconIndex] || <FaRocket />; // Default icon if orderBy exceeds array bounds
 
             return (
               <div key={benefit.id} className="flex items-start space-x-4">
@@ -418,9 +419,7 @@ export const query = graphql`
           }
         }
       }
-    }
-    allStrapiBenefit(sort: { orderBy: ASC }) {
-      nodes {
+      benefits {
         id
         benefitTitle
         benefitBody
