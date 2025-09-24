@@ -157,9 +157,9 @@ const SimpleFooter = () => {
               {footer?.headerThree || "Resources"}
             </h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">White papers</Link></li>
+              <li><Link to="/faq" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Resources</Link></li>
               <li><Link to="/blog" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Blog/News</Link></li>
-              <li><Link to="/faq" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Support/FAQ</Link></li>
+              <li><a href="https://app.airhud.io/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Software documentation</a></li>
             </ul>
           </div>
 
@@ -174,6 +174,7 @@ const SimpleFooter = () => {
               <li><Link to="/legal/license/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">License Agreement</Link></li>
               <li><Link to="/legal/privacy/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Privacy Policy</Link></li>
               <li><Link to="/legal/cookies/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Cookie Policy</Link></li>
+               <li><Link to="/legal/patents/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Patents</Link></li>
             </ul>
           </div>
 

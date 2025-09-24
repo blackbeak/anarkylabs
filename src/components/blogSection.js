@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "gatsby"
 import { NewspaperIcon } from "../components/svg"
 
-
 const BlogSection = ({ 
   articles = [], 
   sectionTitle = "Latest Articles",
@@ -22,7 +21,7 @@ const BlogSection = ({
     <section className={`bg-white py-16 sm:py-24 ${className}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <p className="flex justify-center mb-4">
-                  <NewspaperIcon className="w-8 h-8 text-brandblue" />
+          <NewspaperIcon className="w-8 h-8 text-brandblue" />
         </p>
         {/* Section Title */}
         {sectionTitle && (
@@ -42,11 +41,11 @@ const BlogSection = ({
               className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
             >
               {/* Article Image */}
-              <div className="relative h-48 w-full">
-                {article.articleImage?.localFile?.publicURL ? (
+              <div className="relative h-72 w-full">
+                {article.seoFeatureImage?.localFile?.publicURL ? (
                   <img
-                    src={article.articleImage.localFile.publicURL}
-                    alt={article.title}
+                    src={article.seoFeatureImage.localFile.publicURL}
+                    alt={article.seoTitle}
                     className="object-cover w-full h-full"
                   />
                 ) : (
@@ -59,12 +58,12 @@ const BlogSection = ({
               {/* Article Content */}
               <div className="p-6">
                 <h3 className="text-xl font-bold font-manrope group-hover:text-brandorange transition-colors duration-300 mb-2">
-                  {article.headline || article.title}
+                  {article.seoTitle}
                 </h3>
                 
-                {article.summary && (
+                {article.seoSummary && (
                   <p className="text-gray-600 font-manrope text-sm leading-relaxed mb-4 line-clamp-3">
-                    {article.summary}
+                    {article.seoSummary}
                   </p>
                 )}
 

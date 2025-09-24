@@ -54,8 +54,13 @@ module.exports = {
             singularName: "article",
             queryParams: {
               publicationState: process.env.GATSBY_IS_PREVIEW === "true" ? "preview" : "live",
-              queryParams: {
-                populate: "*",
+               populate: {
+                author: "*",
+                seoFeatureImage: "*", 
+                categories: "*",
+                articles: {
+                  populate: "*"
+                }
               }
             },
           },

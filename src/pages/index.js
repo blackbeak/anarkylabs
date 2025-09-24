@@ -130,11 +130,10 @@ export const query = graphql`
       sectionHeadlineTwo
       articles {
           id
-          title
-          headline
-          summary
+          seoTitle
+          seoSummary
           slug
-          articleImage {
+          seoFeatureImage {
             localFile {
               publicURL
             }

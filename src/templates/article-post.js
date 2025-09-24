@@ -1,167 +1,252 @@
-import React from "react";
-import Markdown from "../components/markdown";
-import { graphql } from "gatsby";
-import Layout from "../components/layout";
-import { Seo } from "../components/seo";
-import { getImage, GatsbyImage } from "gatsby-plugin-image";
-import { FaEnvelope, FaPhone, FaLinkedin } from "react-icons/fa"; // Import FontAwesome icons
+import React from "react"
+import { graphql } from "gatsby"
+import Layout from "../components/layout"
+import { Seo } from "../components/seo"
+import { getImage, GatsbyImage } from "gatsby-plugin-image"
+import { FaEnvelope, FaPhone, FaLinkedin } from "react-icons/fa"
 
-// Utility function to convert YouTube URLs to embed format
-const getYouTubeEmbedUrl = (url) => {
-  if (!url) return null;
-  const videoIdMatch = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))((\w|-){11})(?:\S+)?/);
-  return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : null;
-};
+// Import the new article components
+import ArticleHero from "../components/articleHero"
+import ArticleMedia from "../components/articleMedia" 
+import Quote from "../components/quote"
+import RichText from "../components/richText"
+import BodyImageText from "../components/bodyImageText"
 
 // Add Page Head component and pass in SEO variables from GraphQL
 export const Head = ({ data }) => {
-  const title = data.strapiArticle.title;
-  const description = data.strapiArticle.summary;
-  const shareImage = data.strapiArticle.articleImage.url;
-  //console.log("shareImage URL:", shareImage);
+  const seoTitle = data.strapiArticle.seoTitle
+  const seoSummary = data.strapiArticle.seoSummary
+  const seoFeatureImage = data.strapiArticle.seoFeatureImage?.url
 
-  return <Seo title={title} description={description} shareImage={shareImage} />;
-};
+  return <Seo title={seoTitle} description={seoSummary} shareImage={seoFeatureImage} />
+}
 
 export default function articlePage({ data }) {
-  const article = data.strapiArticle;
+  const article = data.strapiArticle
 
-  // Header Image
-  const headerImage = getImage(article.headerImage.localFile.childImageSharp.gatsbyImageData);
+  // DEBUG: Let's see what data we're getting
+  console.log("Full article data:", article)
+  console.log("Articles array:", article.articles)
+  console.log("Articles length:", article.articles?.length)
+  
+  if (article.articles) {
+    article.articles.forEach((component, index) => {
+      console.log(`Component ${index}:`, component.__typename, component)
+    })
+  }
 
-  // Video or article image
-  const articleImage = getImage(article.articleImage.localFile.childImageSharp.gatsbyImageData);
-  const videoUrl = article.videoUrl ? getYouTubeEmbedUrl(article.videoUrl) : null;
+  // Component renderer function
+  const renderComponent = (component, index) => {
+    if (!component) return null
 
-  // Body Texts
-  const bodyImageText = article.bodyImageText?.data?.bodyImageText || "";
-  const headline = article.headline;
-  const summary = article.summary;
-  const bodyText = article.body.data.body;
+    switch (component.__typename) {
+      case 'STRAPI__COMPONENT_ARTICLES_HERO':
+        return <ArticleHero key={index} data={component} />
+      
+      case 'STRAPI__COMPONENT_ARTICLES_ARTICLE_MEDIA':
+        return <ArticleMedia key={index} data={component} />
+      
+      case 'STRAPI__COMPONENT_ARTICLES_QUOTE':
+        return <Quote key={index} data={component} />
+      
+      case 'STRAPI__COMPONENT_ARTICLES_RICH_TEXT':
+        return <RichText key={index} data={component} />
+      
+      case 'STRAPI__COMPONENT_ARTICLES_BODY_IMAGE_TEXT':
+        return <BodyImageText key={index} data={component} />
+      
+      default:
+        console.warn(`Unknown component type: ${component.__typename}`)
+        return null
+    }
+  }
 
-  // Author information
-  const author = article.author;
-  const authorHeadshot = author.headshot ? getImage(author.headshot.localFile.childImageSharp.gatsbyImageData) : null;
+  // Author information (keep existing author section)
+  const author = article.author
+  const authorHeadshot = author?.headshot ? getImage(author.headshot.localFile.childImageSharp.gatsbyImageData) : null
 
-  // tests
-  // console.log("article.headerImage:", article.headerImage);
   return (
     <Layout>
-      {/* Header section */}
-      <div className="relative w-full min-h-[500px] h-[500px]">
-        {headerImage ? (
-          <GatsbyImage
-            image={headerImage}
-            alt="Header Image"
-            className="absolute inset-0 h-[500px] w-full object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 h-[500px] w-full bg-gray-200"></div>
-        )}
-
-        {/* Radial gradient overlay */}
-        <div
-          className="absolute inset-0 w-full h-full"
-          style={{
-            background: "radial-gradient(circle, rgba(56, 60, 92, 0.7) 0%, rgba(0, 0, 0, 0.9) 70%)",
-          }}
-        ></div>
-
-        {/* Headline inside a container aligned to the left */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-6">
-            <h1 className="text-3xl font-bold font-manrope text-white">
-              {headline}
-            </h1>
-            {/* Display the summary below the headline */}
-            <p className="text-lg font-manrope text-white mt-2">
-              {summary}
-            </p>
-          </div>
+      {/* Dynamic Article Components */}
+      {article.articles && article.articles.length > 0 ? (
+        <div className="article-components">
+          {article.articles.map((component, index) => renderComponent(component, index))}
         </div>
-      </div>
-
-    {/* Video or Article Image Section with bodyImageText */}
-      <div className="container mx-auto px-6 py-12 flex flex-col lg:flex-row gap-6">
-        {/* Image or Video Section */}
-        <div className="lg:w-1/3 w-full flex-shrink-0">
-          {videoUrl ? (
-            <div className="w-full h-[400px]">
-              <iframe
-                src={videoUrl}
-                title="Embedded video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full rounded-lg"
-              ></iframe>
-            </div>
-          ) : articleImage ? (
-            <GatsbyImage 
-              image={articleImage} 
-              alt="Article Image" 
-              className="w-full lg:max-w-[500px] h-auto rounded-lg" 
-            />
-          ) : (
-            <div className="w-full h-[400px] bg-gray-300"></div>
-          )}
+      ) : (
+        /* Fallback: Show message if no components exist */
+        <div className="container mx-auto px-6 py-12 text-center">
+          <h1 className="text-3xl font-bold font-manrope text-gray-900 mb-4">
+            {article.seoTitle}
+          </h1>
+          <p className="text-lg font-manrope text-gray-600">
+            This article is using the legacy format. Please add article components in Strapi.
+          </p>
         </div>
+      )}
 
-        {/* Text Section */}
-        <div className="flex-1 prose font-manrope text-xl lg:max-w-2xl">
-          {bodyImageText && <Markdown>{bodyImageText}</Markdown>}
-        </div>
-      </div>
-
-      {/* Body content */}
-      <div className="container mx-auto px-6 pb-6 pt-6 space-y-4 font-manrope prose-md">
-      <Markdown>{bodyText}</Markdown>
-      </div>
-
-     {/* Author Section */}
+      {/* Author Section - Keep existing styling */}
+      {author && (
         <div className="container mx-auto px-6 py-12 flex flex-col lg:flex-row gap-6 items-start bg-orange-50 rounded-lg shadow-lg">
-        {/* Left-hand side: Author's Headshot */}
-        {authorHeadshot && (
-            <div className="w-24 h-24 lg:w-32 lg:h-32"> {/* Adjusted size for smaller avatar */}
-            <GatsbyImage image={authorHeadshot} alt={author.name} className="rounded-full object-cover" />
+          {/* Left-hand side: Author's Headshot */}
+          {authorHeadshot && (
+            <div className="w-24 h-24 lg:w-32 lg:h-32">
+              <GatsbyImage 
+                image={authorHeadshot} 
+                alt={author.name} 
+                className="rounded-full object-cover" 
+              />
             </div>
-        )}
+          )}
 
-        {/* Right-hand side: Author's Info */}
-        <div className="flex-1">
+          {/* Right-hand side: Author's Info */}
+          <div className="flex-1">
             <h3 className="text-2xl font-bold font-manrope">{author.name}</h3>
             <p className="text-lg font-manrope text-gray-600">{author.title}</p>
             <p className="mt-4 text-gray-800 font-manrope">{author.bio}</p>
 
             {/* Icons for contact information */}
             <div className="flex space-x-4 mt-4">
-            {author.email && (
+              {author.email && (
                 <a href={`mailto:${author.email}`} className="text-gray-700 hover:text-brandred">
-                <FaEnvelope size={24} />
+                  <FaEnvelope size={24} />
                 </a>
-            )}
-            {author.telephone && (
+              )}
+              {author.telephone && (
                 <a href={`tel:${author.telephone}`} className="text-gray-700 hover:text-brandred">
-                <FaPhone size={24} />
+                  <FaPhone size={24} />
                 </a>
-            )}
-            {author.linkedin && (
+              )}
+              {author.linkedin && (
                 <a href={author.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-brandred">
-                <FaLinkedin size={24} />
+                  <FaLinkedin size={24} />
                 </a>
-            )}
+              )}
             </div>
+          </div>
         </div>
-        </div>
+      )}
     </Layout>
-  );
+  )
 }
 
-// Query from Strapi - cycle based on slug
+// Updated GraphQL Query
 export const query = graphql`
   query ($slug: String) {
     strapiArticle(slug: { eq: $slug }) {
-      articleImage {
+      # Dynamic Zone Components
+      articles {
+        __typename
+        ... on STRAPI__COMPONENT_ARTICLES_HERO {
+          id
+          headline
+          description
+          backgroundType
+          backgroundImage {
+            localFile {
+              childImageSharp {
+                gatsbyImageData
+              }
+            }
+          }
+          backgroundVideoUrl
+          customColor
+          customGradient
+          textAlignment
+          ctaOneText
+          ctaOneLink
+          ctaTwoText
+          ctaTwoLink
+          overlayOpacity
+          minHeight
+        }
+        
+        ... on STRAPI__COMPONENT_ARTICLES_ARTICLE_MEDIA {
+          id
+          mediaType
+          image {
+            localFile {
+              childImageSharp {
+                gatsbyImageData
+              }
+            }
+            url
+          }
+          videoUrl
+          caption
+          altText
+          alignment
+          size
+          borderRadius
+          shadow
+        }
+        
+        ... on STRAPI__COMPONENT_ARTICLES_QUOTE {
+          id
+          quoteText
+          personName
+          personTitle
+          companyName
+          companyUrl
+          headshot {
+            localFile {
+              childImageSharp {
+                gatsbyImageData
+              }
+            }
+          }
+          quoteStyle
+          alignment
+          backgroundColor
+          showQuoteMarks
+        }
+        
+        ... on STRAPI__COMPONENT_ARTICLES_RICH_TEXT {
+          id
+          content {
+            data {
+              content
+            }
+          }
+          textSize
+          textAlignment
+          containerWidth
+          backgroundColor
+          padding
+          enableDropCap
+          customCssClass
+        }
+        
+        ... on STRAPI__COMPONENT_ARTICLES_BODY_IMAGE_TEXT {
+          id
+          image {
+            localFile {
+              childImageSharp {
+                gatsbyImageData
+              }
+            }
+            url
+          }
+          imagePosition
+          textContent {
+            data {
+              textContent
+            }
+          }
+          altText
+          imageSize
+          verticalAlignment
+          backgroundColor
+          spacing
+          borderRadius
+          imageShadow
+        }
+      }
+      
+      # Keep existing fields for SEO and author
+      seoTitle
+      seoSummary
+      slug
+      seoFeatureImage {
         localFile {
           childImageSharp {
             gatsbyImageData
@@ -172,10 +257,6 @@ export const query = graphql`
       author {
         bio
         email
-        name
-        title
-        telephone
-        linkedin
         headshot {
           localFile {
             childImageSharp {
@@ -183,29 +264,15 @@ export const query = graphql`
             }
           }
         }
+        linkedin
+        name
+        telephone
+        title
       }
-      body {
-        data {
-          body
-        }
+      categories {
+        name
+        slug
       }
-      bodyImageText {
-        data {
-          bodyImageText
-        }
-      }
-      headerImage {
-        localFile {
-          childImageSharp {
-            gatsbyImageData
-          }
-        }
-      }
-      headline
-      slug
-      summary
-      title
-      videoUrl
     }
   }
-`;
+`

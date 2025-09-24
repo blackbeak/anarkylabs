@@ -75,18 +75,18 @@ const BlogPage = ({ data }) => {
                 href={`/article/${post.slug}`}
                 className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="relative h-48 w-full">
+                <div className="relative h-96 w-full">
                   <img
-                    src={post.articleImage.localFile.publicURL}
-                    alt={post.title}
+                    src={post.seoFeatureImage.localFile.publicURL}
+                    alt={post.seoTitle}
                     className="object-cover w-full h-full rounded-lg"
                   />
                 </div>
                 <div className="mt-4">
                   <h3 className="text-xl font-bold group-hover:text-brandorange transition-colors duration-300">
-                    {post.headline}
+                    {post.seoTitle}
                   </h3>
-                  <p className="text-gray-600 mt-2">{post.summary}</p>
+                  <p className="text-gray-600 mt-2">{post.seoSummary}</p>
                   <span className="text-brandorange hover:underline hover:text-brandred mt-4 inline-block">
                     Read More
                   </span>
@@ -133,19 +133,17 @@ export const query = graphql`
   query BlogPageQuery {
     allStrapiArticle {
       nodes {
-        id
-        title
-        headline
-        summary
+        seoTitle
+        seoSummary
         slug
-        articleImage {
+        seoFeatureImage {
           localFile {
             publicURL
+            childImageSharp {
+              gatsbyImageData
+            }
           }
-        }
-        categories {
-          slug
-          name
+          url
         }
       }
     }

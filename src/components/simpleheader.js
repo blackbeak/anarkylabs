@@ -52,7 +52,7 @@ const SimpleHeader = () => {
               to="/blog"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
             >
-              Resources
+              News
             </Link>
           </nav>
 
@@ -135,7 +135,7 @@ const SimpleHeader = () => {
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Resources
+              News
             </Link>
             <Link 
               to="/contact"
