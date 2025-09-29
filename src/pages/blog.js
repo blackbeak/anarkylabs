@@ -23,13 +23,13 @@ const BlogPage = ({ data }) => {
     setSelectedCategory(category);
   };
 
-  // Filter posts based on the selected category
-  const filteredPosts = selectedCategory
-    ? posts.filter((post) => post.categories.some((cat) => cat.slug === selectedCategory))
+  // Filter posts based on the selected category (if categories field exists)
+  const filteredPosts = selectedCategory && posts[0]?.categories
+    ? posts.filter((post) => post.categories?.some((cat) => cat.slug === selectedCategory))
     : posts; // If no category is selected, show all posts
 
-  // Sort posts by `id` in descending order (latest first)
-  const sortedPosts = filteredPosts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+  // Sort posts by slug or title since id isn't available
+  const sortedPosts = [...filteredPosts];
 
   // Extract header data from Strapi
   const blogHeader = data.strapiBlog;
@@ -71,22 +71,22 @@ const BlogPage = ({ data }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {sortedPosts.map((post) => (
               <a
-                key={post.slug}  // Using slug as a unique key
+                key={post.slug}
                 href={`/article/${post.slug}`}
-                className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
               >
-                <div className="relative h-96 w-full">
+                <div className="relative h-96 w-full flex-shrink-0">
                   <img
                     src={post.seoFeatureImage.localFile.publicURL}
                     alt={post.seoTitle}
                     className="object-cover w-full h-full rounded-lg"
                   />
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col flex-grow">
                   <h3 className="text-xl font-bold group-hover:text-brandorange transition-colors duration-300">
                     {post.seoTitle}
                   </h3>
-                  <p className="text-gray-600 mt-2">{post.seoSummary}</p>
+                  <p className="text-gray-600 mt-2 flex-grow">{post.seoSummary}</p>
                   <span className="text-brandorange hover:underline hover:text-brandred mt-4 inline-block">
                     Read More
                   </span>

@@ -8,7 +8,7 @@ const SimpleHeader = () => {
   }
 
   return (
-    <header className="bg-black border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur border-b border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo - Left */}
@@ -43,10 +43,10 @@ const SimpleHeader = () => {
               Labs
             </Link>
             <Link 
-              to="/faq"
+              to="/support"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
             >
-              Support
+              Resources
             </Link>
             <Link 
               to="/blog"
@@ -124,11 +124,11 @@ const SimpleHeader = () => {
               Labs
             </Link>
             <Link 
-              to="/faq"
+              to="/support"
               className="text-white text-sm hover:text-brandorange font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Support
+              Resources
             </Link>
             <Link 
               to="/blog"

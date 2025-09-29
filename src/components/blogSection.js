@@ -38,10 +38,10 @@ const BlogSection = ({
             <Link
               key={article.slug}
               to={`/article/${article.slug}`}
-              className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+              className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full"
             >
               {/* Article Image */}
-              <div className="relative h-72 w-full">
+              <div className="relative h-72 w-full flex-shrink-0">
                 {article.seoFeatureImage?.localFile?.publicURL ? (
                   <img
                     src={article.seoFeatureImage.localFile.publicURL}
@@ -56,18 +56,18 @@ const BlogSection = ({
               </div>
 
               {/* Article Content */}
-              <div className="p-6">
+              <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-xl font-bold font-manrope group-hover:text-brandorange transition-colors duration-300 mb-2">
                   {article.seoTitle}
                 </h3>
                 
                 {article.seoSummary && (
-                  <p className="text-gray-600 font-manrope text-sm leading-relaxed mb-4 line-clamp-3">
+                  <p className="text-gray-600 font-manrope text-sm leading-relaxed mb-4 line-clamp-3 flex-grow">
                     {article.seoSummary}
                   </p>
                 )}
 
-                <span className="text-brandorange hover:underline hover:text-brandred font-manrope font-medium inline-block">
+                <span className="text-brandorange hover:underline hover:text-brandred font-manrope font-medium inline-block mt-auto">
                   Read More
                 </span>
               </div>

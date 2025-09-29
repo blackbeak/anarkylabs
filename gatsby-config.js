@@ -130,6 +130,9 @@ module.exports = {
           {
             singularName: "training-kit",
           },
+           {
+            singularName: "white-paper",
+          },
           {
             singularName: "softwareItem",
           },
@@ -172,6 +175,9 @@ module.exports = {
           },
           {
             singularName: "faq-home",
+          },
+          {
+            singularName: "support",
           },
           {
             singularName: "blog",
