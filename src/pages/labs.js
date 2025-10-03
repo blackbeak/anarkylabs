@@ -4,6 +4,7 @@ import SimpleHeader from "../components/simpleheader"
 import SimpleFooter from "../components/simplefooter"
 import Hero from "../components/hero"
 import ApiForm from "../components/apiform"
+import { Seo } from "../components/seo"
 
 const LabsPage = ({ data }) => {
   // Get Labs data
@@ -80,14 +81,11 @@ const LabsPage = ({ data }) => {
 // Gatsby Head API for SEO
 export const Head = ({ data }) => {
   const labs = data?.strapiLab
-  
-  return (
-    <>
-      <title>{labs?.seoTitle || "Labs - Research & Development"}</title>
-      <meta name="description" content={labs?.seoDescription || "Advanced research and development initiatives at Anarky Labs."} />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </>
-  )
+  const title = labs?.seoTitle || "Anarky Labs - Advanced Simulation Solutions"
+  const description = labs?.seoDescription || "Home meta description"
+  const shareImage = labs?.hero.backgroundMedia?.url || null
+
+  return <Seo title={title} description={description} shareImage={shareImage} />
 }
 
 export const query = graphql`

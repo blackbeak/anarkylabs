@@ -2,6 +2,7 @@ import React from "react"
 import { graphql } from "gatsby"
 import SimpleHeader from "../components/simpleheader"
 import SimpleFooter from "../components/simplefooter"
+import { Seo } from "../components/seo"
 import Hero from "../components/hero"
 import PageCollection from "../components/pageCollection"
 import LogoCarousel from "../components/logoCarousel"
@@ -110,14 +111,11 @@ const HomePage = ({ data }) => {
 // Gatsby Head API for SEO
 export const Head = ({ data }) => {
   const home = data?.strapiHome
-  
-  return (
-    <>
-      <title>{home?.title || "Anarky Labs - Advanced Simulation Solutions"}</title>
-      <meta name="description" content={home?.description || "Professional simulation and training solutions for aviation, drone operations, and beyond."} />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </>
-  )
+  const title = home?.title || "Anarky Labs - Advanced Simulation Solutions"
+  const description = home?.description || "Home meta description"
+  const shareImage = home?.hero.backgroundMedia?.localFile?.publicURL || null
+
+  return <Seo title={title} description={description} shareImage={shareImage} />
 }
 
 export const query = graphql`

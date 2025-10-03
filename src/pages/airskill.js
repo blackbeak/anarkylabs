@@ -364,8 +364,9 @@ const AirskillPage = ({ data }) => {
 export const Head = ({ data }) => {
   const idx = data.strapiIndex;
   const title = idx.title;
+  const description = idx.summary || "Home meta description";
   const image = idx.bodyImage.url;
-  return <Seo title={title} shareImage={image} />;
+  return <Seo title={title} description={description} shareImage={image} />;
 };
 
 // get the data with GraphQL

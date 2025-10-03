@@ -9,6 +9,7 @@ import FeatureCollections from "../components/featureCollections"
 import CtaSection from "../components/ctaSection"
 import VideoPlayer from "../components/videoPlayer"
 import SelectedFAQ from "../components/selectedFaq"
+import { Seo } from "../components/seo"
 
 const AirHUDPage = ({ data }) => {
   // Get AirHUD data
@@ -29,7 +30,7 @@ const AirHUDPage = ({ data }) => {
   const videoUrl = airHUD?.videoUrl || null
  
   // Debug FAQ data
-  console.log("AirHUD FAQs:", airHUD?.faqs)
+  //console.log("AirHUD FAQs:", airHUD?.faqs)
  
   if (!airHUD) {
     return (
@@ -170,16 +171,14 @@ const AirHUDPage = ({ data }) => {
 
 // Gatsby Head API for SEO
 export const Head = ({ data }) => {
-  const airHUDtitle = data?.strapiAirhud.benefitHeadline || "AirHUD™ - Flying drones smarter and safer with XR";
-  
-  return (
-    <>
-      <title>{airHUDtitle}</title>
-      <meta name="description" content="Professional aviation simulation solution with advanced HUD technology for training and operations." />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </>
-  )
+  const airhud = data?.strapiAirhud
+  const title = airhud?.benefitHeadline || "Anarky Labs - Advanced XR Solutions for drone pilots"
+  const description = airhud?.hero?.description || "Home meta description"
+  const shareImage = airhud?.hero.backgroundMedia?.localFile?.publicURL || null
+
+  return <Seo title={title} description={description} shareImage={shareImage} />
 }
+
 
 export const query = graphql`
   query {

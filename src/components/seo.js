@@ -9,7 +9,7 @@ const robotsContent = isProduction ? 'index, follow' : 'noindex, nofollow';
 
 
 
-export const Seo = ({ title, url, description, shareImage, children }) => {
+export const Seo = ({ title, url, description, shareImage, image, children }) => {
   const {
     title: defaultTitle,
     description: defaultDescription,
@@ -19,14 +19,21 @@ export const Seo = ({ title, url, description, shareImage, children }) => {
     author,
   } = useSiteMetadata();
 
+  // Accept either shareImage or image prop
+  const providedImage = shareImage || image;
+
   // Ensure the image URL is absolute by prepending the site URL if necessary
-  const imageUrl = shareImage?.startsWith('http') ? shareImage : `${siteUrl}${shareImage}`;
+  const imageUrl = providedImage?.startsWith('http') 
+    ? providedImage 
+    : providedImage 
+      ? `${siteUrl}${providedImage}` 
+      : defaultImage;
 
   const seo = {
     title: title || defaultTitle,
     description: description || defaultDescription,
     author,
-    image: imageUrl || defaultImage,
+    image: imageUrl,
     url: url || siteUrl,
     twitterUsername,
   };
