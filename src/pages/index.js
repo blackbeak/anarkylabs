@@ -160,6 +160,9 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        
+        overlayEnabled
+        overlayOpacity
       }
     }
     allStrapiHero {
@@ -187,6 +190,9 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        overlayEnabled
+        overlayOpacity
+        textAlignment
       }
     }
     allStrapiPageCollection {

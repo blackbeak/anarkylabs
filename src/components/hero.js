@@ -14,52 +14,33 @@ const Hero = ({ heroID, allHeroes = [] }) => {
   // Determine background type safely
   const backgroundType = heroData ? getBackgroundType(heroData, videoData) : 'gradient'
 
-  // Get style variant from Strapi (defaults to gradient-dark if not set)
-  const styleVariant = heroData?.styleVariant || 'gradient-dark'
+  // Get text alignment from Strapi (defaults to center if not set)
+  const textAlignment = heroData?.textAlignment || 'center'
 
-  // Style variants configuration
-  const styleVariants = {
-    "gradient-dark": {
-      containerClass: "bg-gradient-to-b from-black to-gray-600",
-      textClass: "text-white",
-      ctaOneClass: "bg-white hover:bg-brandorange text-black",
-      ctaTwoClass: "border-2 border-white text-white hover:bg-white hover:text-black"
-    },
-    "gradient-light": {
-      containerClass: "bg-gradient-to-b from-gray-600 to-white",
-      textClass: "text-stone-700", 
-      ctaOneClass: "bg-black hover:bg-brandorange text-white",
-      ctaTwoClass: "border-2 border-black text-black hover:bg-black hover:text-white"
-    },
-    "gradient-brand": {
-      containerClass: "bg-gradient-to-br from-brandblue to-brandorange",
-      textClass: "text-white",
-      ctaOneClass: "bg-white hover:bg-brandblue text-brandorange",
-      ctaTwoClass: "border-2 border-white text-white hover:bg-white hover:text-brandorange"
-    },
-    "solid-white": {
-      containerClass: "bg-white",
-      textClass: "text-gray-900",
-      ctaOneClass: "bg-brandorange hover:bg-brandblue text-white",
-      ctaTwoClass: "border-2 border-brandorange text-brandorange hover:bg-brandorange hover:text-white"
-    },
-    "solid-dark": {
-      containerClass: "bg-gray-900",
-      textClass: "text-white",
-      ctaOneClass: "bg-brandorange hover:bg-white text-white hover:text-gray-900",
-      ctaTwoClass: "border-2 border-white text-white hover:bg-white hover:text-gray-900"
-    },
-    "image-overlay": {
-      containerClass: "bg-gray-900",
-      textClass: "text-white",
-      ctaOneClass: "bg-brandorange hover:bg-white text-white hover:text-gray-900",
-      ctaTwoClass: "border-2 border-white text-white hover:bg-white hover:text-gray-900",
-      hasImageOverlay: true
+  // Get overlay settings from Strapi
+  const overlayEnabled = heroData?.overlayEnabled ?? false
+  const overlayOpacity = heroData?.overlayOpacity ?? 50
+
+  // Convert 0-100 to 0-1 decimal for CSS opacity
+  const overlayOpacityDecimal = overlayOpacity / 100
+
+  // Text alignment classes - different approach for flush alignment
+  const getWrapperClass = () => {
+    if (textAlignment === 'left') {
+      return 'mr-auto max-w-6xl' // No wrapper, content flows naturally left
+    } else if (textAlignment === 'right') {
+      return 'ml-auto max-w-6xl' // Push content to right
+    } else {
+      return 'mx-auto max-w-6xl' // Center content
     }
   }
 
-  // Get current variant styles
-  const currentStyles = styleVariants[styleVariant] || styleVariants["gradient-dark"]
+  const containerClass = textAlignment === 'left' ? 'text-left' : 
+                         textAlignment === 'right' ? 'text-right' : 
+                         'text-center'
+
+  // Get current alignment styles
+  const wrapperClass = getWrapperClass()
 
   // useEffect MUST be called before any early returns
   useEffect(() => {
@@ -135,7 +116,7 @@ const Hero = ({ heroID, allHeroes = [] }) => {
   }
 
   const renderBackground = () => {
-    // If there's a video or image, render it (this takes priority)
+    // Video Service (YouTube/Vimeo)
     if (backgroundType === 'video-service') {
       return (
         <div className="absolute inset-0 z-0">
@@ -165,11 +146,18 @@ const Hero = ({ heroID, allHeroes = [] }) => {
             title="Hero background video"
           />
           
-          <div className="absolute inset-0 bg-black bg-opacity-60 z-10" />
+          {/* Dynamic overlay for video */}
+          {overlayEnabled && (
+            <div 
+              className="absolute inset-0 bg-black z-10"
+              style={{ opacity: overlayOpacityDecimal }}
+            />
+          )}
         </div>
       )
     }
 
+    // Direct Video
     if (backgroundType === 'video-direct') {
       return (
         <div className="absolute inset-0 z-0">
@@ -182,11 +170,18 @@ const Hero = ({ heroID, allHeroes = [] }) => {
             src={backgroundMedia.url}
             onLoadedData={() => setIsVideoLoaded(true)}
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40" />
+          {/* Dynamic overlay for video */}
+          {overlayEnabled && (
+            <div 
+              className="absolute inset-0 bg-black"
+              style={{ opacity: overlayOpacityDecimal }}
+            />
+          )}
         </div>
       )
     }
 
+    // Image
     if (backgroundType === 'image') {
       return (
         <div className="absolute inset-0 z-0">
@@ -211,55 +206,107 @@ const Hero = ({ heroID, allHeroes = [] }) => {
               className="w-full h-full object-cover"
             />
           ) : null}
-          {currentStyles.hasImageOverlay && (
-            <div className="absolute inset-0 bg-black bg-opacity-50" />
+          {/* Dynamic overlay for image */}
+          {overlayEnabled && (
+            <div 
+              className="absolute inset-0 bg-black"
+              style={{ opacity: overlayOpacityDecimal }}
+            />
           )}
         </div>
       )
     }
 
-    // If no video or image, return null (the container will show the gradient)
+    // If no video or image, return null (gradient background will show)
     return null
   }
 
   return (
-    <section className={`relative py-8 sm:py-16 min-h-[80vh] flex items-center overflow-hidden ${currentStyles.containerClass}`}>
+    <section className="relative py-8 sm:py-16 min-h-[80vh] flex items-center overflow-hidden bg-gradient-to-b from-black to-gray-900">
       {renderBackground()}
 
       <div className="relative z-20 w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {headline && (
-            <h1 className={`text-2xl md:text-6xl font-bold font-manrope drop-shadow-lg ${currentStyles.textClass}`}>
-              {headline}
-            </h1>
-          )}
-          
-          {description && (
-            <p className={`text-lg sm:text-xl mt-4 leading-relaxed opacity-90 font-manrope drop-shadow-md max-w-3xl mx-auto ${currentStyles.textClass}`}>
-              {description}
-            </p>
-          )}
-
-          {(ctaOneText || ctaTwoText) && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
-              {ctaOneText && ctaOneLink && (
-                <Link
-                  to={ctaOneLink}
-                  className={`inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-manrope ${currentStyles.ctaOneClass}`}
-                >
-                  {ctaOneText}
-                </Link>
+        <div className={`container mx-auto px-4 sm:px-6 lg:px-8 ${containerClass}`}>
+          {wrapperClass ? (
+            <div className={wrapperClass}>
+              {headline && (
+                <h1 className="text-2xl md:text-6xl font-bold font-manrope drop-shadow-lg text-white">
+                  {headline}
+                </h1>
               )}
               
-              {ctaTwoText && ctaTwoLink && (
-                <Link
-                  to={ctaTwoLink}
-                  className={`inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 font-manrope backdrop-blur-sm ${currentStyles.ctaTwoClass}`}
-                >
-                  {ctaTwoText}
-                </Link>
+              {description && (
+                <p className="text-lg sm:text-xl mt-4 leading-relaxed opacity-90 font-manrope drop-shadow-md text-white">
+                  {description}
+                </p>
+              )}
+
+              {(ctaOneText || ctaTwoText) && (
+                <div className={`flex flex-col sm:flex-row gap-4 mt-8 ${
+                  textAlignment === 'left' ? 'justify-start' : 
+                  textAlignment === 'right' ? 'justify-end' : 
+                  'justify-center'
+                }`}>
+                  {ctaOneText && ctaOneLink && (
+                    <Link
+                      to={ctaOneLink}
+                      className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-manrope bg-white hover:bg-brandorange text-black"
+                    >
+                      {ctaOneText}
+                    </Link>
+                  )}
+                  
+                  {ctaTwoText && ctaTwoLink && (
+                    <Link
+                      to={ctaTwoLink}
+                      className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 font-manrope backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-black"
+                    >
+                      {ctaTwoText}
+                    </Link>
+                  )}
+                </div>
               )}
             </div>
+          ) : (
+            <>
+              {headline && (
+                <h1 className="text-2xl md:text-6xl font-bold font-manrope drop-shadow-lg text-white">
+                  {headline}
+                </h1>
+              )}
+              
+              {description && (
+                <p className="text-lg sm:text-xl mt-4 leading-relaxed opacity-90 font-manrope drop-shadow-md text-white">
+                  {description}
+                </p>
+              )}
+
+              {(ctaOneText || ctaTwoText) && (
+                <div className={`flex flex-col sm:flex-row gap-4 mt-8 ${
+                  textAlignment === 'left' ? 'justify-start' : 
+                  textAlignment === 'right' ? 'justify-end' : 
+                  'justify-center'
+                }`}>
+                  {ctaOneText && ctaOneLink && (
+                    <Link
+                      to={ctaOneLink}
+                      className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-manrope bg-white hover:bg-brandorange text-black"
+                    >
+                      {ctaOneText}
+                    </Link>
+                  )}
+                  
+                  {ctaTwoText && ctaTwoLink && (
+                    <Link
+                      to={ctaTwoLink}
+                      className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 font-manrope backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-black"
+                    >
+                      {ctaTwoText}
+                    </Link>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

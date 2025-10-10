@@ -180,6 +180,7 @@ export const Head = ({ data }) => {
 }
 
 
+
 export const query = graphql`
   query {
     strapiAirhud {
@@ -214,6 +215,9 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        textAlignment
+        overlayEnabled
+        overlayOpacity
       }
       faqs {
         id
@@ -280,6 +284,9 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        textAlignment
+        overlayEnabled
+        overlayOpacity
       }
     }
     allStrapiCtaSection {
@@ -300,6 +307,7 @@ export const query = graphql`
       }
     }
   }
+
 `
 
 export default AirHUDPage

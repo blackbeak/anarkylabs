@@ -120,6 +120,9 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        overlayEnabled
+        overlayOpacity
+        textAlignment
       }
     }
   }

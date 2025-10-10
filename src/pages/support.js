@@ -214,6 +214,8 @@ export const query = graphql`
           }
         }
         backgroundVideo
+        overlayEnabled
+        overlayOpacity
       }
       white_papers {
         id
