@@ -200,9 +200,6 @@ const BlogPage = ({ data }) => {
       {/* Elfsight Widget Section */}
       <div className="bg-white py-12">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold font-manrope text-center mb-8 text-gray-900">
-            Latest from Our Feed
-          </h2>
           <ElfsightWidget />
         </div>
       </div>
