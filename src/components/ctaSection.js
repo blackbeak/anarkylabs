@@ -104,8 +104,8 @@ const CtaSection = ({ ctaData }) => {
           {renderCTAButton(ctaThreeText, ctaThreeSlug, ctaThree, <StartTrialIcon />, 3)}
         </div>
 
-        {/* Bottom action buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+        {/* Bottom action buttons - removed at Sakari's request */}
+        {/* <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
           {ctaOneSlug && (
             <a 
               href={ctaOneSlug} 
@@ -124,7 +124,7 @@ const CtaSection = ({ ctaData }) => {
               {ctaTwoText || 'Contact Sales'}
             </a>
           )}
-        </div>
+        </div> */}
       </div>
     </section>
   )

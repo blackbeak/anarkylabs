@@ -41,9 +41,9 @@ const SimpleFooter = () => {
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 text-center md:text-left">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center md:text-left">
           
-          {/* Company Section - Left side with logo, summary, contact info */}
+          {/* Company Section - Left side with logo, summary, contact info - column 1 & 2*/}
           <div className="col-span-2 md:col-span-1">
             {/* Logo */}
             {logo && (
@@ -127,8 +127,8 @@ const SimpleFooter = () => {
             </div>
           </div>
 
-          {/* Cases Section */}
-          <div className="col-span-1 md:col-start-3">
+          {/* Cases Section -removed at sakari's request- column 2 */}
+          {/* <div className="col-span-1 md:col-start-3">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerOne || "Cases"}
             </h3>
@@ -137,9 +137,9 @@ const SimpleFooter = () => {
               <li><Link to="/case/drone-pilot-academies/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Drone training academies</Link></li>
               <li><Link to="/case/fire-departments/" className="text-gray-300 hover:text-brandorange transition-colors font-manrope">Fire departments</Link></li>
             </ul>
-          </div>
+          </div> */}
 
-          {/* Products Section */}
+          {/* Products Section column 3*/}
           <div className="col-span-1 md:col-start-4">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerTwo || "Products"}
@@ -151,7 +151,7 @@ const SimpleFooter = () => {
             </ul>
           </div>
 
-          {/* Resources Section */}
+          {/* Resources Section column 4*/}
           <div className="col-span-1 md:col-start-5">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerThree || "Resources"}
@@ -163,7 +163,7 @@ const SimpleFooter = () => {
             </ul>
           </div>
 
-          {/* Company Section */}
+          {/* Company Section column 5*/}
           <div className="col-span-1 md:col-start-6">
             <h3 className="text-lg font-semibold font-manrope mb-4">
               {footer?.headerFour || "Company"}
