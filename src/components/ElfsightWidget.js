@@ -10,7 +10,7 @@ const ElfsightWidget = () => {
   }, []);
 
   return (
-    <div className="elfsight-app-af1c7b65-065d-4c05-a53e-722372f12861" data-elfsight-app-lazy></div>
+    <div className="elfsight-app-f3f52b7b-dd7b-4603-9b17-4d2aebb397d1" data-elfsight-app-lazy></div>
   );
 };
 
