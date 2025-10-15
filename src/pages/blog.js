@@ -54,6 +54,8 @@ const BlogPage = ({ data }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  console.log('Selected category:', selectedCategory);
+
   return (
     <Layout>
       {/* Hero Section */}
