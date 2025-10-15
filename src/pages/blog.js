@@ -28,6 +28,7 @@ const BlogPage = ({ data }) => {
       )
     : posts;
 
+   
   // Sort by date (newest first)
   const sortedPosts = [...filteredPosts].sort((a, b) => {
     const dateA = new Date(a.date || 0);
@@ -54,7 +55,7 @@ const BlogPage = ({ data }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  console.log('Selected category:', selectedCategory);
+
 
   return (
     <Layout>
