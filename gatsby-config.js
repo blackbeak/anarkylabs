@@ -11,6 +11,10 @@ require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 
+// Check if this is the production domain
+const isProduction = process.env.URL === 'https://anarkylabs.com' || 
+                     process.env.DEPLOY_PRIME_URL === 'https://anarkylabs.com';
+
 module.exports = {
   siteMetadata: {
     title: `Anarky Labs - Advanced Simulation Solutions`,
@@ -40,21 +44,81 @@ module.exports = {
         short_name: `AnarkylLabs`,
         start_url: `/`,
         background_color: `#383c5c`,
-        icon: `src/images/AirSkill-icon.png`, // Update this icon later
+        icon: `src/images/AirSkill-icon.png`,
       },
     },
+    
+    // Sitemap - Only on production
+    isProduction && {
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        excludes: [
+          `/dev-404-page`,
+          `/404`,
+          `/404.html`,
+          `/offline-plugin-app-shell-fallback`,
+        ],
+        resolveSiteUrl: () => `https://anarkylabs.com`,
+        serialize: ({ path }) => {
+          let priority = 0.7
+          let changefreq = 'weekly'
+          
+          if (path === '/') {
+            priority = 1.0
+            changefreq = 'daily'
+          }
+          else if (path === '/airhud' || path === '/airskill') {
+            priority = 0.9
+            changefreq = 'weekly'
+          }
+          else if (path.startsWith('/article/') || path === '/blog') {
+            priority = 0.8
+            changefreq = 'weekly'
+          }
+          else if (path === '/contact' || path === '/support' || path === '/shop-index') {
+            priority = 0.8
+            changefreq = 'monthly'
+          }
+          
+          return {
+            url: path,
+            changefreq,
+            priority,
+          }
+        },
+      },
+    },
+    
+    // Robots.txt - Block indexing on staging
+    !isProduction && {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        policy: [{userAgent: '*', disallow: '/'}]
+      }
+    },
+    
+    // Robots.txt - Allow indexing on production
+    isProduction && {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        host: 'https://anarkylabs.com',
+        sitemap: 'https://anarkylabs.com/sitemap-index.xml',
+        policy: [{userAgent: '*', allow: '/'}]
+      }
+    },
+    
+    // Strapi Source Plugin
     {
       resolve: "gatsby-source-strapi",
       options: {
         apiURL: "https://energized-canvas-6b08f4eb08.strapiapp.com/",
         accessToken: process.env.STRAPI_ACCESS_TOKEN,
-
         collectionTypes: [
           {
             singularName: "article",
             queryParams: {
               publicationState: process.env.GATSBY_IS_PREVIEW === "true" ? "preview" : "live",
-               populate: {
+              populate: {
                 author: "*",
                 seoFeatureImage: "*", 
                 categories: "*",
@@ -130,7 +194,7 @@ module.exports = {
           {
             singularName: "training-kit",
           },
-           {
+          {
             singularName: "white-paper",
           },
           {
@@ -144,11 +208,9 @@ module.exports = {
           },
         ],
         singleTypes: [
-          // Add the new home page
           {
             singularName: "home",
           },
-          // Keep existing for future product sections
           {
             singularName: "about",
           },
@@ -161,7 +223,7 @@ module.exports = {
           {
             singularName: "airhud",
           },
-           {
+          {
             singularName: "lab",
           },
           {
@@ -191,5 +253,5 @@ module.exports = {
         ],
       },
     },
-  ],
+  ].filter(Boolean), // Remove any false values from conditional plugins
 };
