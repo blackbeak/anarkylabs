@@ -6,9 +6,10 @@ const ApiForm = ({
   onSuccess = null,
   onError = null,
   className = "space-y-4",
-  layout = "vertical" // Add layout prop: "vertical" or "horizontal"
+  layout = "vertical"
 }) => {
   const [status, setStatus] = useState({ loading: false, success: null, error: null });
+  const [isHuman, setIsHuman] = useState(false); // Human verification checkbox
 
   // Fetch all forms from Strapi
   const data = useStaticQuery(graphql`
@@ -46,7 +47,7 @@ const ApiForm = ({
     );
   }
 
-  // Extract form configuration from Strapi (with fallbacks only if Strapi fields are empty)
+  // Extract form configuration from Strapi
   const {
     buttonText,
     successMessage,
@@ -55,7 +56,6 @@ const ApiForm = ({
     field: fields = []
   } = formData;
 
-  // Strapi values take precedence, fallbacks only used if Strapi fields are empty/null
   const config = {
     buttonText: buttonText || "Submit",
     successMessage: successMessage || "Form submitted successfully!",
@@ -72,7 +72,7 @@ const ApiForm = ({
 
     // Build payload dynamically - INCLUDE formId
     const payload = {
-      formId: formId  // ADD THE FORM ID TO THE PAYLOAD
+      formId: formId
     };
     
     fields.forEach(field => {
@@ -82,7 +82,6 @@ const ApiForm = ({
       }
     });
 
-    // Debug log to see what's being sent
     console.log('Payload being sent:', payload);
 
     setStatus({ loading: true, success: null, error: null });
@@ -240,36 +239,54 @@ const ApiForm = ({
 
   // Determine form layout classes
   const isHorizontal = layout === "horizontal";
-  const formClasses = isHorizontal ? "flex items-end gap-0" : "space-y-4";
-  const buttonClasses = isHorizontal 
-    ? "px-4 py-2 bg-white text-black hover:bg-brandorange hover:text-white rounded-r-lg transition-colors text-sm font-manrope font-medium"
-    : "bg-brandblue font-manrope text-white px-6 py-2 rounded hover:bg-brandorange disabled:opacity-50 transition-colors";
-
+  
+  // For horizontal forms, we'll wrap everything in a column layout
+  const formClasses = isHorizontal ? "flex flex-col space-y-2" : "space-y-4";
+  
+  
   return (
-    <div className={className}>
-      <form onSubmit={handleSubmit} className={formClasses}>
-        {/* Messages - only show above form, not inline for horizontal */}
-        {!isHorizontal && status.success && (
-          <div className="text-green-600 font-manrope bg-green-50 p-3 rounded">
-            {status.success}
-          </div>
-        )}
-        {!isHorizontal && status.error && (
-          <div className="text-red-600 font-manrope bg-red-50 p-3 rounded">
-            {status.error}
-          </div>
-        )}
+  <div className={className}>
+    <form onSubmit={handleSubmit} className={formClasses}>
+      {/* Messages - only show above form for vertical */}
+      {!isHorizontal && status.success && (
+        <div className="text-green-600 font-manrope bg-green-50 p-3 rounded">
+          {status.success}
+        </div>
+      )}
+      {!isHorizontal && status.error && (
+        <div className="text-red-600 font-manrope bg-red-50 p-3 rounded">
+          {status.error}
+        </div>
+      )}
 
-        {/* Fields */}
+      {/* Human verification checkbox - ABOVE email for horizontal forms */}
+      {isHorizontal && (
+        <div className="flex items-center space-x-2 pb-2">
+          <input
+            type="checkbox"
+            id={`human-check-${formId}`}
+            checked={isHuman}
+            onChange={(e) => setIsHuman(e.target.checked)}
+            className="h-3.5 w-3.5 text-brandblue focus:ring-brandorange border-gray-600 rounded bg-gray-800"
+          />
+          <label 
+            htmlFor={`human-check-${formId}`}
+            className="font-manrope text-xs text-gray-400 cursor-pointer select-none"
+          >
+            I'm not a robot (check before entering your email)
+          </label>
+        </div>
+      )}
+
+      {/* Fields Container */}
+      <div className={isHorizontal ? "flex items-center gap-0" : "space-y-4"}>
         {sortedFields.map((field, index) => (
           <div key={index}>
             {field.type !== 'hidden' && (
               <>
                 {isHorizontal ? (
-                  // Horizontal layout - no labels, direct field rendering
                   renderField(field, true)
                 ) : (
-                  // Vertical layout - with labels
                   <label className="block font-manrope font-semibold">
                     {field.label}
                     {field.required && <span className="text-red-500 ml-1">*</span>}
@@ -282,31 +299,67 @@ const ApiForm = ({
           </div>
         ))}
 
-        {/* Honeypot field - hidden from users */}
-        <input type="text" name="company_website" hidden />
+        {/* Submit button in same row for horizontal */}
+        {isHorizontal && (
+          <button
+            type="submit"
+            disabled={status.loading || !isHuman}
+            className="px-4 py-2 bg-white text-black hover:bg-brandorange hover:text-white rounded-r-lg transition-colors text-sm font-manrope font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            title={!isHuman ? "Please confirm you're not a robot" : ""}
+          >
+            {status.loading ? "Submitting..." : config.buttonText}
+          </button>
+        )}
+      </div>
 
+      {/* Honeypot field */}
+      <input type="text" name="company_website" hidden />
+
+      {/* Human verification checkbox - for vertical forms only (below fields) */}
+      {!isHorizontal && (
+        <div className="flex items-start space-x-3 py-2">
+          <input
+            type="checkbox"
+            id={`human-check-${formId}`}
+            checked={isHuman}
+            onChange={(e) => setIsHuman(e.target.checked)}
+            className="mt-1 h-4 w-4 text-brandblue focus:ring-brandorange border-gray-300 rounded"
+          />
+          <label 
+            htmlFor={`human-check-${formId}`}
+            className="font-manrope text-sm text-gray-700 cursor-pointer select-none"
+          >
+            I'm not a robot
+          </label>
+        </div>
+      )}
+
+      {/* Submit button for vertical layout */}
+      {!isHorizontal && (
         <button
           type="submit"
-          disabled={status.loading}
-          className={buttonClasses}
+          disabled={status.loading || !isHuman}
+          className="bg-brandblue font-manrope text-white px-6 py-2 rounded hover:bg-brandorange disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          title={!isHuman ? "Please confirm you're not a robot" : ""}
         >
           {status.loading ? "Submitting..." : config.buttonText}
         </button>
-      </form>
+      )}
+    </form>
 
-      {/* Messages for horizontal layout - show below form */}
-      {isHorizontal && status.success && (
-        <div className="text-green-300 font-manrope bg-green-900/50 border border-green-700/50 p-3 rounded mt-4">
-          {status.success}
-        </div>
-      )}
-      {isHorizontal && status.error && (
-        <div className="text-red-300 font-manrope bg-red-900/50 border border-red-700/50 p-3 rounded mt-4">
-          {status.error}
-        </div>
-      )}
-    </div>
-  );
+    {/* Messages for horizontal layout - show below form */}
+    {isHorizontal && status.success && (
+      <div className="text-green-300 font-manrope bg-green-900/50 border border-green-700/50 p-3 rounded mt-4">
+        {status.success}
+      </div>
+    )}
+    {isHorizontal && status.error && (
+      <div className="text-red-300 font-manrope bg-red-900/50 border border-red-700/50 p-3 rounded mt-4">
+        {status.error}
+      </div>
+    )}
+  </div>
+);
 };
 
 export default ApiForm;
