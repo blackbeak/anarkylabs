@@ -9,6 +9,7 @@ import FeatureCollections from "../components/featureCollections"
 import CtaSection from "../components/ctaSection"
 import VideoPlayer from "../components/videoPlayer"
 import SelectedFAQ from "../components/selectedFaq"
+import Markdown from "../components/markdown"
 import { Seo } from "../components/seo"
 
 const AirHUDPage = ({ data }) => {
@@ -28,6 +29,9 @@ const AirHUDPage = ({ data }) => {
   const systemOverviewImage = airHUD?.systemOverview ? getImage(airHUD.systemOverview?.localFile?.childImageSharp?.gatsbyImageData) : null
   const bodyImage = airHUD?.hero?.backgroundMedia ? getImage(airHUD.hero.backgroundMedia?.localFile?.childImageSharp?.gatsbyImageData) : null
   const videoUrl = airHUD?.videoUrl || null
+ 
+  // Get supported drones content
+  const supportedDrones = airHUD?.supportedDrones?.data?.supportedDrones || null
  
   // Debug FAQ data
   //console.log("AirHUD FAQs:", airHUD?.faqs)
@@ -146,6 +150,19 @@ const AirHUDPage = ({ data }) => {
           </section>
         )}
 
+        {/* Supported Drones Section - NEW */}
+        {supportedDrones && (
+          <section className="bg-white py-12 sm:py-24">
+            <div className="container mx-auto px-2 sm:px-6 lg:px-8">
+              <div className="max-w-4xl mx-auto text-center">
+                <Markdown className="prose prose-lg mx-auto font-manrope">
+                  {supportedDrones}
+                </Markdown>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* CTA Section */}
         {airHUDCta && (
           <CtaSection ctaData={airHUDCta} />
@@ -191,6 +208,11 @@ export const query = graphql`
       videoHeadline
       benefitHeadline
       benefitText
+      supportedDrones {
+        data {
+          supportedDrones
+        }
+      }
       hero {
         id
         heroID
