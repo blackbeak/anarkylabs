@@ -1,13 +1,18 @@
 import React from 'react';
-import { graphql, Link } from 'gatsby';
+import { graphql } from 'gatsby';
 import Layout from '../components/layout';
 import { Seo } from '../components/seo';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import Markdown from '../components/markdown';
+import CtaSection from "../components/ctaSection"
 
 const CasePage = ({ data }) => {
   const { headline, heroImage, case_collections, testimonials } = data.strapiCase;
   const heroImageData = getImage(heroImage.localFile.childImageSharp.gatsbyImageData);
+  // for CTA section
+  const allCtaSections = data.allStrapiCtaSection?.nodes || []
+  const homeCta = allCtaSections.find(cta => cta.ctaID === "home")
+
 
   return (
     <Layout>
@@ -105,13 +110,10 @@ const CasePage = ({ data }) => {
       </div>
 
 
-      <div className="w-full bg-sky-50">
-        <div className="container mx-auto px-6 py-12 text-left h-[150px] flex items-center">
-          <p className="text-xl font-manrope text-black">
-            Get started by visiting our <Link to="/product/starter-kit-with-dji-controller-offer/" className="text-brandorange hover:underline hover:text-brandred">webshop</Link> or <Link to="/contact" className="text-brandorange hover:underline hover:text-brandred">get in touch here</Link> for more information.
-          </p>
-        </div>
-      </div>
+      {/* CTA Section */}
+        {homeCta && (
+          <CtaSection ctaData={homeCta} />
+        )}
     </Layout>
   );
 };
@@ -153,6 +155,25 @@ export const query = graphql`
             }
           }
         }
+      }
+    }
+    allStrapiCtaSection {
+      nodes {
+        id
+        ctaID
+        headline
+        description
+        ctaOneText
+        ctaOneSlug
+        ctaOne
+        ctaTwoText
+        ctaTwoSlug
+        ctaTwo 
+        ctaTwoText
+        ctaTwoSlug
+        ctaThreeText
+        ctaThreeSlug
+        ctaThree 
       }
     }
   }
