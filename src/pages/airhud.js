@@ -153,7 +153,7 @@ const AirHUDPage = ({ data }) => {
         {/* Supported Drones Section - NEW */}
         {supportedDrones && (
           <section className="bg-white py-12 sm:py-24">
-            <div className="container mx-auto px-2 sm:px-6 lg:px-8">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-4xl mx-auto text-center">
                 <Markdown className="prose prose-lg mx-auto font-manrope">
                   {supportedDrones}

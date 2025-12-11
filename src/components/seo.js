@@ -2,12 +2,8 @@
 import React from "react";
 import { useSiteMetadata } from "../hooks/use-site-metadata";
 
-const isProduction = typeof window !== 'undefined' && 
-  (window.location.hostname === 'anarkylabs.com');
-
+const isProduction = process.env.GATSBY_SITE_URL === 'https://anarkylabs.com';
 const robotsContent = isProduction ? 'index, follow' : 'noindex, nofollow';
-
-
 
 export const Seo = ({ title, url, description, shareImage, image, children }) => {
   const {
