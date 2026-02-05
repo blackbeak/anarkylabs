@@ -374,7 +374,7 @@ export default function ProductPage({ data }) {
     <Layout>
       <Seo title={version.headline} description={version.versionDescription} />
       
-      <div className="relative w-full min-h-[250px] h-[250px] bg-black flex items-center font-manrope">
+      <div className="relative w-full min-h-[500px] h-[500px] bg-black flex items-center font-manrope">
         <div className="container mx-auto pl-6">
           <h1 className="text-3xl font-bold font-manrope text-white">
             {version.headline}

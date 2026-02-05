@@ -7,6 +7,9 @@ dotenv.config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 
+// Check if this is the production environment
+const isProduction = process.env.URL === 'https://anarkylabs.com' ||
+                     process.env.DEPLOY_PRIME_URL === 'https://anarkylabs.com';
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
@@ -33,6 +36,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       allStrapiVersion {
         nodes {
           versionName
+          publish
+          publish_staging
         }
       }
       allStrapiCase {
@@ -73,7 +78,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 
   // Create pages for products
-  const productPages = result.data.allStrapiVersion.nodes;
+  // Filter based on environment:
+  // - Production: only create pages where publish is true
+  // - Staging: create pages where publish OR publish_staging is true
+  const productPages = result.data.allStrapiVersion.nodes.filter(node => {
+    if (isProduction) {
+      return node.publish === true;
+    } else {
+      // Staging: create page if either publish or publish_staging is true
+      return node.publish === true || node.publish_staging === true;
+    }
+  });
+
   productPages.forEach((node) => {
     createPage({
       path: `/product/${node.versionName}`,

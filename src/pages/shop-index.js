@@ -4,16 +4,29 @@ import Layout from "../components/layout";
 import { Seo } from "../components/seo";
 import { getImage, GatsbyImage } from "gatsby-plugin-image";
 
+// Check if this is the production environment
+const isProduction = process.env.GATSBY_SITE_URL === 'https://anarkylabs.com';
+
 export default function ShopIndex({ data }) {
-  const versions = data.allStrapiVersion.nodes;
+  // Filter versions based on environment:
+  // - Production: only show items where publish is true
+  // - Staging: show items where publish OR publish_staging is true
+  const versions = data.allStrapiVersion.nodes.filter(version => {
+    if (isProduction) {
+      return version.publish === true;
+    } else {
+      // Staging: show if either publish or publish_staging is true
+      return version.publish === true || version.publish_staging === true;
+    }
+  });
 
   return (
     <Layout>
       <Seo title="Shop" />
-      <div className="bg-black py-16">
+      <div className="bg-black py-32">
       <div className="container mx-auto px-6 text-left">
         <h1 className="text-4xl font-bold text-white font-manrope">Online Shop</h1>
-        <p className="text-lg text-brandorange mt-2 font-manrope">
+        <p className="text-lg text-white mt-2 font-manrope">
           Select kits depending on your preference or requirements or just simply licenses if you have your own compatible hardware.
         </p>
       </div>
@@ -54,13 +67,15 @@ export default function ShopIndex({ data }) {
 
 export const query = graphql`
   query {
-    allStrapiVersion(filter: { publish: { eq: true } }, sort: { order: ASC }) {
+    allStrapiVersion(sort: { order: ASC }) {
       nodes {
         id
         headline
         versionDescription
         versionName
         annualPrice
+        publish
+        publish_staging
         productPicture {
           localFile {
             childImageSharp {
