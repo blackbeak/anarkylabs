@@ -50,7 +50,11 @@ export default function ShopIndex({ data }) {
                     {version.headline}
                   </h2>
                   <p className="text-lg text-gray-700 mt-2 font-manrope">{version.versionDescription}</p>
-                  <p className="text-xl text-brandorange font-semibold mt-4 font-manrope">€{version.annualPrice}</p>
+                  <p className="text-xl text-brandorange font-semibold mt-4 font-manrope">
+                    {version.monthlyPrice
+                      ? `From €${version.monthlyPrice}/month`
+                      : `€${version.annualPrice}`}
+                  </p>
                   <span className="text-sm font-manrope text-gray-700 group-hover:text-brandorange transition duration-300 mt-2">
                     Read More
                   </span>
@@ -74,6 +78,7 @@ export const query = graphql`
         versionDescription
         versionName
         annualPrice
+        monthlyPrice
         publish
         publish_staging
         productPicture {

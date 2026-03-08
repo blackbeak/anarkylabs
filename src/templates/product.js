@@ -33,45 +33,45 @@ const countries = [
   "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ];
 
-const CheckoutForm = ({ version }) => {
+const CheckoutForm = ({ version, paymentMode = "annual" }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [country, setCountry] = useState(""); // Country selected by the user
-  const [vatMessage, setVATMessage] = useState(""); // Dynamic VAT message
-  const [totalPriceWithVAT, setTotalPriceWithVAT] = useState(0); // Ensure this is initialized as a number
+  const [country, setCountry] = useState("");
+  const [vatMessage, setVATMessage] = useState("");
+  const [totalPriceWithVAT, setTotalPriceWithVAT] = useState(0);
 
   const VAT_RATE = 0.255; // 25.5% VAT for Finnish companies
-  //console.log("version.annualPrice:", version.annualPrice);
-  const calculateTotalPrice = (annualPrice, quantity, country) => {
-    const basePriceInCents = Math.round(annualPrice * 100); // Convert price to cents
+
+  const isMonthly = paymentMode === "monthly";
+  const activePrice = isMonthly ? version.monthlyPrice : version.annualPrice;
+  const activePriceId = isMonthly ? version.stripePriceMonthlyID : version.stripePriceAnnualID;
+
+  const calculateTotalPrice = (unitPrice, quantity, country) => {
+    const basePriceInCents = Math.round(unitPrice * 100);
     const vatPerProduct =
-      country === "Finland" ? Math.round(basePriceInCents * VAT_RATE) : 0; // VAT per product
-    const totalPerProduct = basePriceInCents + vatPerProduct; // Total per product (including VAT)
-    const total = totalPerProduct * quantity; // Total for all products (including VAT)
+      country === "Finland" ? Math.round(basePriceInCents * VAT_RATE) : 0;
+    const totalPerProduct = basePriceInCents + vatPerProduct;
+    const total = totalPerProduct * quantity;
     return {
       total,
-      vatAmount: vatPerProduct * quantity, // Total VAT for all products
+      vatAmount: vatPerProduct * quantity,
     };
   };
 
   const handleQuantityChange = (event) => {
-    const newQuantity = parseInt(event.target.value, 10) || 1; // Default to 1 if invalid
+    const newQuantity = parseInt(event.target.value, 10) || 1;
     setQuantity(newQuantity);
-  
+
     if (country === "Finland") {
-      const { total, vatAmount } = calculateTotalPrice(
-        version.annualPrice,
-        newQuantity,
-        country
-      );
-      setTotalPriceWithVAT(total / 100); // Convert to euros for display
-      setVATMessage(`Includes €${(vatAmount / 100).toFixed(2)} VAT`); // Update VAT message
+      const { total, vatAmount } = calculateTotalPrice(activePrice, newQuantity, country);
+      setTotalPriceWithVAT(total / 100);
+      setVATMessage(`Includes €${(vatAmount / 100).toFixed(2)} VAT`);
     } else {
-      setTotalPriceWithVAT(Number(version.annualPrice * newQuantity)); // Total without VAT
-      setVATMessage(""); // Reset VAT message for non-Finland countries
+      setTotalPriceWithVAT(Number(activePrice * newQuantity));
+      setVATMessage("");
     }
   };
 
@@ -80,16 +80,12 @@ const CheckoutForm = ({ version }) => {
     setCountry(selectedCountry);
 
     if (selectedCountry === "Finland") {
-      const { total, vatAmount } = calculateTotalPrice(
-        version.annualPrice,
-        quantity,
-        selectedCountry
-      );
-      setTotalPriceWithVAT(total / 100); // Convert to euros for display
+      const { total, vatAmount } = calculateTotalPrice(activePrice, quantity, selectedCountry);
+      setTotalPriceWithVAT(total / 100);
       setVATMessage(`Includes €${(vatAmount / 100).toFixed(2)} VAT`);
     } else {
-      setTotalPriceWithVAT(Number(version.annualPrice * quantity)); // Ensure this is always a number
-      setVATMessage(""); // Reset VAT message for non-Finland countries
+      setTotalPriceWithVAT(Number(activePrice * quantity));
+      setVATMessage("");
     }
   };
 
@@ -100,36 +96,31 @@ const CheckoutForm = ({ version }) => {
 
     const formData = new FormData(event.target);
 
-    // Ensure version.annualPrice is a valid number
-  const yearlyPrice = parseFloat(version.annualPrice);
-  if (isNaN(yearlyPrice)) {
-    console.error("Invalid annual price:", version.annualPrice);
-    setErrors({ payment: "Invalid product price. Please try again." });
-    setLoading(false);
-    return;
-  }
-  
-    const { total, vatAmount } = calculateTotalPrice(
-      version.annualPrice,
-      quantity,
-      country
-    );
-    
-    const basicPriceInCents = Math.round(yearlyPrice * 100); // Convert price to cents
-   
-    // Add all required data to the FormData
+    const unitPrice = parseFloat(activePrice);
+    if (isNaN(unitPrice)) {
+      setErrors({ payment: "Invalid product price. Please try again." });
+      setLoading(false);
+      return;
+    }
+
+    const { total, vatAmount } = calculateTotalPrice(activePrice, quantity, country);
+    const basicPriceInCents = Math.round(unitPrice * 100);
+
     formData.append("totalPriceInCents", total);
     formData.append("basicPriceInCents", basicPriceInCents);
     formData.append("vatAmount", vatAmount);
-    formData.append("priceId", version.stripePriceAnnualID);
+    formData.append("priceId", activePriceId);
     formData.append("orderId", uuidv4());
-    
-    // Prepare data to send to the backend
+    formData.append("paymentMode", paymentMode);
+
     const payload = Object.fromEntries(formData.entries());
-    // console.log("Payload being sent:", payload);
-    // console.log("JSON.stringify(payload):", JSON.stringify(payload));
+
     try {
-      const response = await fetch("/.netlify/functions/create-payment-intent", {
+      const endpoint = isMonthly
+        ? "/.netlify/functions/create-subscription"
+        : "/.netlify/functions/create-payment-intent";
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -159,10 +150,9 @@ const CheckoutForm = ({ version }) => {
   };
 
   React.useEffect(() => {
-    const { total } = calculateTotalPrice(version.annualPrice, quantity, country);
-    setTotalPriceWithVAT(total / 100); // Initialize total price as a number
-  }, [version.annualPrice, quantity, country]
-);
+    const { total } = calculateTotalPrice(activePrice, quantity, country);
+    setTotalPriceWithVAT(total / 100);
+  }, [activePrice, quantity, country]);
 
   return (
     <form onSubmit={handleSubmit} className="mt-4">
@@ -353,8 +343,8 @@ const CheckoutForm = ({ version }) => {
         {loading
           ? "Processing..."
           : country === "Finland"
-          ? `Buy Now (€${totalPriceWithVAT.toFixed(2)} incl. VAT)`
-          : `Buy Now (€${totalPriceWithVAT.toFixed(2)})`}
+          ? `${isMonthly ? "Subscribe" : "Buy Now"} (€${totalPriceWithVAT.toFixed(2)}${isMonthly ? "/mo" : ""} incl. VAT)`
+          : `${isMonthly ? "Subscribe" : "Buy Now"} (€${totalPriceWithVAT.toFixed(2)}${isMonthly ? "/mo" : ""})`}
       </button>
 
       {errors.payment && <p className="text-red-500 mt-2">{errors.payment}</p>}
@@ -365,15 +355,19 @@ const CheckoutForm = ({ version }) => {
 export default function ProductPage({ data }) {
   const version = data.strapiVersion;
   const productImage = getImage(version.productPicture.localFile.childImageSharp.gatsbyImageData);
-  console.log("Debug: productImage", productImage);
   const productVariables = version.product_variables;
   const softwareItems = version.software_items;
   const testimonials = data.allStrapiTestimonial.nodes;
+  const [paymentMode, setPaymentMode] = useState("annual");
+
+  const hasMonthlyOption = version.monthlyPrice && version.stripePriceMonthlyID;
+  const activePrice = paymentMode === "monthly" ? version.monthlyPrice : version.annualPrice;
+  const activePriceLabel = paymentMode === "monthly" ? "/month" : "/year";
 
   return (
     <Layout>
       <Seo title={version.headline} description={version.versionDescription} />
-      
+
       <div className="relative w-full min-h-[500px] h-[500px] bg-black flex items-center font-manrope">
         <div className="container mx-auto pl-6">
           <h1 className="text-3xl font-bold font-manrope text-white">
@@ -387,12 +381,39 @@ export default function ProductPage({ data }) {
           <h2 className="text-2xl font-bold font-manrope text-blue-600">
             What You Get
           </h2>
+
+          {/* Payment mode tabs */}
+          {hasMonthlyOption && (
+            <div className="mt-6 flex border border-gray-300 rounded-lg overflow-hidden">
+              <button
+                onClick={() => setPaymentMode("annual")}
+                className={`flex-1 py-3 px-4 text-sm font-bold transition-colors ${
+                  paymentMode === "annual"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-black hover:bg-gray-100"
+                }`}
+              >
+                12 Month License
+              </button>
+              <button
+                onClick={() => setPaymentMode("monthly")}
+                className={`flex-1 py-3 px-4 text-sm font-bold transition-colors ${
+                  paymentMode === "monthly"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-black hover:bg-gray-100"
+                }`}
+              >
+                Monthly Payment
+              </button>
+            </div>
+          )}
+
           <div className="mt-8">
           <div className="mt-4">
-            <GatsbyImage 
-              image={productImage} 
-              alt={version.headline} 
-              className="w-4/5 flext-start rounded-lg" 
+            <GatsbyImage
+              image={productImage}
+              alt={version.headline}
+              className="w-4/5 flext-start rounded-lg"
             />
             <ul className="mt-4">
               {softwareItems.map((item, index) => (
@@ -403,7 +424,7 @@ export default function ProductPage({ data }) {
               ))}
             </ul>
           </div>
-          
+
           <div className="mt-8">
             <ul className="mt-2">
               {productVariables.map((variable, index) => (
@@ -420,10 +441,10 @@ export default function ProductPage({ data }) {
               ))}
             </ul>
           </div>
-         
+
             <div className="mt-10 text-black font-manrope">
               <h2 className="text-4xl font-bold text-blue-600 mb-4">
-                €{version.annualPrice} 
+                €{activePrice}<span className="text-lg font-normal">{activePriceLabel}</span>
               </h2>
               <p className="text-brandblue mb-4">VAT not included</p>
               <p>
@@ -434,7 +455,7 @@ export default function ProductPage({ data }) {
         </div>
         <div className="lg:w-1/3 w-full">
           <Elements stripe={stripePromise}>
-            <CheckoutForm version={version} />
+            <CheckoutForm version={version} paymentMode={paymentMode} />
           </Elements>
         </div>
         <div className="lg:w-1/3 w-full">
@@ -489,6 +510,8 @@ export const query = graphql`
       versionDescription
       stripePriceAnnualID
       annualPrice
+      monthlyPrice
+      stripePriceMonthlyID
       productPicture {
         localFile {
           childImageSharp {

@@ -4,4 +4,8 @@
   functions = "netlify/functions"
 
 [dev]
+  command = "gatsby develop"
+  targetPort = 8000
+  port = 8888
   functions = "netlify/functions"
+  timeout = 300
